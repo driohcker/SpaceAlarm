@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="24dp">
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="闹钟名称"
+        app:boxBackgroundColor="@android:color/white"
+        app:boxStrokeColor="#757575"
+        app:hintTextColor="#757575">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editAlarmName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#212121"
+            android:text="我的闹钟" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提醒半径"
+        android:textColor="#212121"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/editAlarmRadius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:valueFrom="50"
+        android:valueTo="1000"
+        android:stepSize="50"
+        android:value="100"
+        app:thumbColor="#757575"
+        app:trackColorActive="#757575"
+        app:trackColorInactive="#E0E0E0" />
+
+    <TextView
+        android:id="@+id/radiusValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100米"
+        android:textColor="#757575"
+        android:textSize="14sp"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="启用振动"
+            android:textColor="#212121"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchVibration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTint="#757575"
+            android:trackTint="#BDBDBD"
+            android:checked="true" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="启用铃声"
+            android:textColor="#212121"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchSound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:thumbTint="#757575"
+            android:trackTint="#BDBDBD"
+            android:checked="true" />
+
+    </LinearLayout>
+
+</LinearLayout>
