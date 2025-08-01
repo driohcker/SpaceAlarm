@@ -46,7 +46,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:visibility="gone"
-                android:paddingEnd="16dp">
+                android:paddingEnd="8dp">
                 <EditText
                     android:id="@+id/search_edit_text"
                     android:layout_width="0dp"
@@ -61,13 +61,21 @@
                     android:textColor="#333333"
                     android:textColorHint="#999999"/>
                 <ImageView
+                    android:id="@+id/history_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_history"
+                    android:contentDescription="搜索历史"
+                    android:padding="12dp"/>
+                <ImageView
                     android:id="@+id/search_button"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_search"
+                    android:background="@drawable/rounded_background_blue"
                     android:contentDescription="搜索"
                     android:padding="12dp"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="0dp"/>
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 

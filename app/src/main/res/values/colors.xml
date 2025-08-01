@@ -14,4 +14,6 @@
     <color name="text_primary">#212121</color>
     <color name="text_secondary">#757575</color>
     <color name="text_hint">#9E9E9E</color>
+    <color name="primary_color">#E63FA9F6</color>
+    <color name="secondary_color">#E66C97C1</color>
 </resources>

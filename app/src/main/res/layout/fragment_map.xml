@@ -20,7 +20,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="20mm"
-        android:src="@android:drawable/ic_menu_add" />
+        android:src="@android:drawable/ic_menu_add"
+        app:backgroundTint="@color/primary_color" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_locate"
@@ -29,6 +30,7 @@
         android:layout_above="@id/fab_add_alarm"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_mylocation" />
+        android:src="@android:drawable/ic_menu_mylocation"
+        app:backgroundTint="@color/secondary_color" />
 
 </RelativeLayout>

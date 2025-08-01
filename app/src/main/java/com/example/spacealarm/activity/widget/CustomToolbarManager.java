@@ -1,6 +1,7 @@
 package com.example.spacealarm.activity.widget;
 
 import android.app.Activity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +21,17 @@ import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.example.spacealarm.service.BaiduLocationService;
 
+// 添加必要的导入
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.spacealarm.R;
+import java.util.List;
+
 public class CustomToolbarManager {
     private static Toolbar toolbar;
     private static View titleLayout;
@@ -27,6 +39,9 @@ public class CustomToolbarManager {
     private static EditText searchEditText;
     private static PoiSearch mPoiSearch;
     private static MapFragment mapFragment;
+    private static SearchHistoryManager searchHistoryManager;
+    private static PopupWindow searchHistoryPopup;
+    private static SearchHistoryAdapter searchHistoryAdapter;
 
     // 初始化Toolbar管理器
     public static void setup(Activity activity) {
@@ -34,6 +49,9 @@ public class CustomToolbarManager {
         titleLayout = activity.findViewById(R.id.toolbar_title_layout);
         searchLayout = activity.findViewById(R.id.toolbar_search_layout);
         searchEditText = activity.findViewById(R.id.search_edit_text);
+
+        // 初始化搜索历史管理器
+        searchHistoryManager = SearchHistoryManager.getInstance(activity);
 
         // 初始化POI搜索
         mPoiSearch = PoiSearch.newInstance();
@@ -69,7 +87,24 @@ public class CustomToolbarManager {
         // 设置搜索按钮点击事件
         ImageView searchButton = activity.findViewById(R.id.search_button);
         if (searchButton != null) {
-            searchButton.setOnClickListener(v -> performSearch(activity));
+            searchButton.setOnClickListener(v -> {
+                String keyword = searchEditText.getText().toString();
+                if (!keyword.isEmpty()) {
+                    // 添加到搜索历史
+                    searchHistoryManager.addSearchHistory(keyword);
+                    performSearch(activity);
+                    // 隐藏搜索历史弹窗
+                    hideSearchHistoryPopup();
+                }else{
+                    Toast.makeText(activity, "请输入搜索关键词", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        // 添加搜索历史按钮点击事件
+        ImageView historyButton = activity.findViewById(R.id.history_button);
+        if (historyButton != null) {
+            historyButton.setOnClickListener(v -> showSearchHistory(activity));
         }
     }
 
@@ -187,6 +222,90 @@ public class CustomToolbarManager {
         if (titleLayout != null && searchLayout != null) {
             titleLayout.setVisibility(View.GONE);
             searchLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    // 新增方法：显示搜索历史
+    private static void showSearchHistory(Activity activity) {
+        if (searchHistoryPopup == null) {
+            View view = LayoutInflater.from(activity).inflate(R.layout.search_history_layout, null);
+            RecyclerView recyclerView = view.findViewById(R.id.search_history_recycler);
+            TextView clearHistory = view.findViewById(R.id.clear_history);
+
+            // 设置RecyclerView
+            recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+            List<String> historyList = searchHistoryManager.getSearchHistory();
+            searchHistoryAdapter = new SearchHistoryAdapter(historyList);
+            recyclerView.setAdapter(searchHistoryAdapter);
+
+            // 设置搜索历史项点击事件
+            searchHistoryAdapter.setOnHistoryItemClickListener(keyword -> {
+                searchEditText.setText(keyword);
+                searchHistoryPopup.dismiss();
+                performSearch(activity);
+            });
+
+            // 设置删除按钮点击事件
+            searchHistoryAdapter.setOnDeleteClickListener(keyword -> {
+                searchHistoryManager.deleteSearchHistory(keyword);
+                searchHistoryAdapter = new SearchHistoryAdapter(searchHistoryManager.getSearchHistory());
+                recyclerView.setAdapter(searchHistoryAdapter);
+                // 重新设置监听器
+                searchHistoryAdapter.setOnHistoryItemClickListener(searchHistoryAdapter.getOnHistoryItemClickListener());
+                searchHistoryAdapter.setOnDeleteClickListener(searchHistoryAdapter.getOnDeleteClickListener());
+            });
+
+            // 设置清除全部历史点击事件
+            clearHistory.setOnClickListener(v -> {
+                searchHistoryManager.clearSearchHistory();
+                searchHistoryAdapter = new SearchHistoryAdapter(searchHistoryManager.getSearchHistory());
+                recyclerView.setAdapter(searchHistoryAdapter);
+                // 重新设置监听器
+                searchHistoryAdapter.setOnHistoryItemClickListener(searchHistoryAdapter.getOnHistoryItemClickListener());
+                searchHistoryAdapter.setOnDeleteClickListener(searchHistoryAdapter.getOnDeleteClickListener());
+            });
+
+            // 创建PopupWindow
+            // 计算弹窗宽度，比屏幕宽度小32dp（左右各16dp边距）
+            int margin = activity.getResources().getDimensionPixelSize(R.dimen.search_history_margin);
+            DisplayMetrics metrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int screenWidth = metrics.widthPixels;
+            int width = screenWidth - 2 * margin;
+            searchHistoryPopup = new PopupWindow(view, width, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+            searchHistoryPopup.setOutsideTouchable(true);
+            searchHistoryPopup.setFocusable(true);
+            searchHistoryPopup.setBackgroundDrawable(activity.getResources().getDrawable(android.R.color.transparent));
+        } else {
+            // 更新搜索历史数据
+            List<String> historyList = searchHistoryManager.getSearchHistory();
+            searchHistoryAdapter = new SearchHistoryAdapter(historyList);
+            RecyclerView recyclerView = (RecyclerView) searchHistoryPopup.getContentView().findViewById(R.id.search_history_recycler);
+            recyclerView.setAdapter(searchHistoryAdapter);
+            // 重新设置监听器
+            searchHistoryAdapter.setOnHistoryItemClickListener(keyword -> {
+                searchEditText.setText(keyword);
+                searchHistoryPopup.dismiss();
+            });
+            searchHistoryAdapter.setOnDeleteClickListener(keyword -> {
+                searchHistoryManager.deleteSearchHistory(keyword);
+                searchHistoryAdapter = new SearchHistoryAdapter(searchHistoryManager.getSearchHistory());
+                recyclerView.setAdapter(searchHistoryAdapter);
+                // 重新设置监听器
+                searchHistoryAdapter.setOnHistoryItemClickListener(searchHistoryAdapter.getOnHistoryItemClickListener());
+                searchHistoryAdapter.setOnDeleteClickListener(searchHistoryAdapter.getOnDeleteClickListener());
+            });
+        }
+
+        // 显示PopupWindow，设置左右边距
+        int margin = activity.getResources().getDimensionPixelSize(R.dimen.search_history_margin);
+        searchHistoryPopup.showAsDropDown(toolbar, 0, 10);
+    }
+
+    // 新增方法：隐藏搜索历史弹窗
+    public static void hideSearchHistoryPopup() {
+        if (searchHistoryPopup != null && searchHistoryPopup.isShowing()) {
+            searchHistoryPopup.dismiss();
         }
     }
 }

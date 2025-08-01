@@ -36,9 +36,12 @@ android {
 dependencies {
 
     implementation libs.appcompat
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation files('libs\\BaiduLBS_Android.jar')
     implementation libs.material
+    implementation libs.firebase.crashlytics.buildtools
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
