@@ -48,18 +48,27 @@ public class CustomBottomNavigation {
 
             final int index = i;
             item.setOnClickListener(v -> {
-                switchFragment(activity, index);
+                highlight(activity, index);
+                switchFragment(activity, fragments[index]);
             });
 
             navLayout.addView(item);
         }
 
-        switchFragment(activity, 0);
+        highlight(activity, 0);
+        switchFragment(activity, fragments[0]);
     }
 
-    public static void switchFragment(AppCompatActivity activity, int selectedIndex) {
-        CustomToolbarManager.switchToolbarForFragment(fragments[selectedIndex].getClass());
+    public static void switchFragment(AppCompatActivity activity, Fragment fragment) {
+        CustomToolbarManager.switchToolbarForFragment(fragment.getClass());
 
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+    }
+
+    public static void highlight(AppCompatActivity activity, int selectedIndex) {
         LinearLayout navLayout = activity.findViewById(R.id.custom_bottom_nav);
 
         for (int i = 0; i < navLayout.getChildCount(); i++) {
@@ -75,10 +84,5 @@ public class CustomBottomNavigation {
                 icon.setColorFilter(Color.GRAY);
             }
         }
-
-        activity.getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragments[selectedIndex])
-                .commit();
     }
 }

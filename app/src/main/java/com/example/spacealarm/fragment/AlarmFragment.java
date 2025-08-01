@@ -71,7 +71,8 @@ public class AlarmFragment extends Fragment implements AlarmController.MainViewC
         mapFragment.setArguments(bundle);
 
         if (getActivity() instanceof AppCompatActivity) {
-            CustomBottomNavigation.switchFragment((AppCompatActivity) getActivity(), 1);
+            CustomBottomNavigation.switchFragment((AppCompatActivity) getActivity(), mapFragment);
+            CustomBottomNavigation.highlight((AppCompatActivity) getActivity(), 1);
         }
     }
 

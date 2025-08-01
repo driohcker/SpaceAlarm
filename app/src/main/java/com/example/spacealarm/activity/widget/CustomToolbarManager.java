@@ -82,22 +82,34 @@ public class CustomToolbarManager {
     private static void performSearch(Activity activity) {
         if (searchEditText != null && !searchEditText.getText().toString().isEmpty()) {
             String keyword = searchEditText.getText().toString();
-            
-            // 获取用户当前城市
             String city = null;
-            try {
-                BaiduLocationService locationService = BaiduLocationService.getInstance(activity);
-                city = locationService.getCurrentCity();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            // 如果无法获取当前城市，使用默认城市"北京"
+
+            // 1. 尝试从关键词中提取城市名称
+            city = extractCityFromKeyword(keyword);
+
+            // 2. 如果关键词中没有明确的城市名称，则使用当前城市
             if (city == null || city.isEmpty()) {
-                city = "北京";
+                try {
+                    BaiduLocationService locationService = BaiduLocationService.getInstance(activity);
+                    city = locationService.getCurrentCity();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // 如果无法获取当前城市，使用默认城市"北京"
+                if (city == null || city.isEmpty()) {
+                    city = "北京";
+                }
+            } else {
+                // 3. 如果关键词中包含城市名称，提取纯关键词
+                keyword = keyword.replaceAll(city, "").trim();
+                // 处理可能的标点符号
+                if (keyword.startsWith("市")) {
+                    keyword = keyword.substring(1).trim();
+                }
             }
-            
-            // 使用当前城市进行搜索
+
+            // 4. 使用确定的城市和关键词进行搜索
             mPoiSearch.searchInCity(new PoiCitySearchOption()
                     .city(city)
                     .keyword(keyword)
@@ -105,6 +117,45 @@ public class CustomToolbarManager {
         } else {
             Toast.makeText(activity, "请输入搜索关键词", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // 辅助方法：从关键词中提取城市名称
+    private static String extractCityFromKeyword(String keyword) {
+        // 这里使用百度地图SDK的地理编码API来解析关键词
+        // 简单实现：检查关键词是否包含常见城市后缀
+        String[] citySuffixes = {"市", "省", "自治区", "特别行政区"};
+        
+        // 查找关键词中是否包含城市后缀
+        for (String suffix : citySuffixes) {
+            int index = keyword.indexOf(suffix);
+            if (index > 0) {
+                // 提取城市名称（假设城市名称至少有2个字符）
+                if (index >= 1) {
+                    return keyword.substring(0, index + suffix.length());
+                }
+            }
+        }
+        
+        // 检查常见城市的简称或别名
+        String[][] cityAlias = {
+            {"北京", "北京市"},
+            {"上海", "上海市"},
+            {"广州", "广州市"},
+            {"深圳", "深圳市"},
+            {"杭州", "杭州市"},
+            {"郴州", "郴州市"},
+            {"衡阳", "衡阳市"},
+            {"长沙", "长沙市"}
+            // 可以添加更多城市别名
+        };
+        
+        for (String[] alias : cityAlias) {
+            if (keyword.contains(alias[0]) && !keyword.contains(alias[1])) {
+                return alias[1];
+            }
+        }
+        
+        return null;
     }
 
     // 在适当的生命周期方法中释放资源
