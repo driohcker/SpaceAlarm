@@ -7,28 +7,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.spacealarm.R;
+import com.example.spacealarm.activity.widget.CustomBottomNavigation;
 import com.example.spacealarm.adapter.AlarmAdapter;
-import com.example.spacealarm.controller.MainController;
+import com.example.spacealarm.controller.AlarmController;
 import com.example.spacealarm.entity.Alarm;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.List;
 
-public class AlarmFragment extends Fragment implements MainController.MainViewCallback {
-    private MainController mainController;
+public class AlarmFragment extends Fragment implements AlarmController.MainViewCallback {
+    private AlarmController alarmController;
     private RecyclerView recyclerView;
     private AlarmAdapter alarmAdapter;
 
@@ -39,16 +40,16 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
 
         // 初始化视图和控制器
         recyclerView = view.findViewById(R.id.alarmRecyclerView);
-        mainController = new MainController(getActivity());
-        mainController.setViewCallback(this);
+        alarmController = new AlarmController(getActivity());
+        alarmController.setViewCallback(this);
 
         // 设置RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        alarmAdapter = new AlarmAdapter(getActivity(), this::onAlarmClick, this::onAlarmToggle);
+        alarmAdapter = new AlarmAdapter(getActivity(), this::onAlarmClick, this::onAlarmToggle, this::onLocationIconClick);
         recyclerView.setAdapter(alarmAdapter);
 
         // 加载闹钟数据
-        mainController.loadAllAlarms();
+        alarmController.loadAllAlarms();
         return view;
     }
 
@@ -59,7 +60,19 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
 
     private void onAlarmToggle(Alarm alarm, boolean isChecked) {
         alarm.setEnabled(isChecked);
-        mainController.toggleAlarm(alarm.getId());
+        alarmController.toggleAlarm(alarm.getId());
+    }
+
+    public void onLocationIconClick(Alarm alarm) {
+        // 跳转到地图界面并定位到该闹钟位置
+        MapFragment mapFragment = new MapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong("alarmId", alarm.getId());
+        mapFragment.setArguments(bundle);
+
+        if (getActivity() instanceof AppCompatActivity) {
+            CustomBottomNavigation.switchFragment((AppCompatActivity) getActivity(), 1);
+        }
     }
 
     @Override
@@ -72,12 +85,12 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
 
     @Override
     public void onAlarmDeleted(long alarmId) {
-        mainController.loadAllAlarms();
+        alarmController.loadAllAlarms();
     }
 
     @Override
     public void onAlarmToggled(long alarmId, boolean enabled) {
-        mainController.loadAllAlarms();
+        alarmController.loadAllAlarms();
     }
 
     @Override
@@ -90,8 +103,8 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
     @Override
     public void onResume() {
         super.onResume();
-        if (mainController != null) {
-            mainController.loadAllAlarms();
+        if (alarmController != null) {
+            alarmController.loadAllAlarms();
         }
     }
 
@@ -145,11 +158,11 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
                     alarm.setVibrate(isVibrate);
                     alarm.setRing(isRing);
                     
-                    boolean success = mainController.updateAlarm(alarm);
+                    boolean success = alarmController.updateAlarm(alarm);
                     
                     if (success) {
                         Toast.makeText(getContext(), "闹钟更新成功", Toast.LENGTH_SHORT).show();
-                        mainController.loadAllAlarms();
+                        alarmController.loadAllAlarms();
                     } else {
                         Toast.makeText(getContext(), "闹钟更新失败", Toast.LENGTH_SHORT).show();
                     }
@@ -171,7 +184,7 @@ public class AlarmFragment extends Fragment implements MainController.MainViewCa
                         .setPositiveButton("删除", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mainController.deleteAlarm(alarm.getId());
+                                alarmController.deleteAlarm(alarm.getId());
                             }
                         })
                         .setNegativeButton("取消", null)

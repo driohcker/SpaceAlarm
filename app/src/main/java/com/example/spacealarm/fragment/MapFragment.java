@@ -42,7 +42,6 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
     private FloatingActionButton fab_locate, fab_add_alarm;
 
     private MapController mapController;
-    // 添加一个变量来存储最近点击位置的地址
     private String lastClickedAddress = "";
 
     @Nullable
@@ -53,13 +52,20 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         fab_locate = view.findViewById(R.id.fab_locate);
         fab_add_alarm = view.findViewById(R.id.fab_add_alarm);
 
-
-        // 使用Activity上下文而非应用上下文
         try {
             mapController = new MapController(getActivity(), mMapView);
-            mapController.centerToMyLocation();
+
             mapController.startLocation();
             mapController.setOnMapInteractionListener(this);
+
+            // 检查是否有闹钟ID参数，如果有则定位到该闹钟
+            Bundle bundle = getArguments();
+            if (bundle != null && bundle.containsKey("alarmId")) {
+                long alarmId = bundle.getLong("alarmId");
+                mapController.showAlarmLocation(alarmId);
+            }else{
+                mapController.centerToMyLocation();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getContext(), "地图初始化失败", Toast.LENGTH_SHORT).show();
@@ -96,8 +102,14 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         super.onResume();
         if (mMapView != null  && mapController !=null) {
             mapController.onResume();
-            mapController.centerToMyLocation();
-            // 确保位置服务已启动
+            // 检查是否有闹钟ID参数，如果有则定位到该闹钟
+            Bundle bundle = getArguments();
+            if (bundle != null && bundle.containsKey("alarmId")) {
+                long alarmId = bundle.getLong("alarmId");
+                mapController.showAlarmLocation(alarmId);
+            }else{
+                mapController.centerToMyLocation();
+            }
             mapController.startLocation();
         }
         // 检查定位权限

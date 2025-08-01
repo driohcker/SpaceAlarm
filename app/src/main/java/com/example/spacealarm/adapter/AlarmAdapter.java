@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
     private List<Alarm> alarms;
     private OnAlarmClickListener clickListener;
     private OnAlarmToggleListener toggleListener;
+    private OnLocationIconClickListener locationIconClickListener;
 
     public interface OnAlarmClickListener {
         void onAlarmClick(Alarm alarm);
@@ -30,10 +32,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         void onAlarmToggle(Alarm alarm, boolean isChecked);
     }
 
-    public AlarmAdapter(Context context, OnAlarmClickListener clickListener, OnAlarmToggleListener toggleListener) {
+    public interface OnLocationIconClickListener {
+        void onLocationIconClick(Alarm alarm);
+    }
+
+    public AlarmAdapter(Context context, OnAlarmClickListener clickListener, 
+                        OnAlarmToggleListener toggleListener, OnLocationIconClickListener locationIconClickListener) {
         this.context = context;
         this.clickListener = clickListener;
         this.toggleListener = toggleListener;
+        this.locationIconClickListener = locationIconClickListener;
     }
 
     @NonNull
@@ -53,13 +61,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmRadius.setText(String.format("半径：%d米", (int) alarm.getRadius()));
         holder.alarmSwitch.setChecked(alarm.isEnabled());
 
-        // 设置点击事件
+        // 设置卡片点击事件
         holder.itemView.setOnClickListener(v -> clickListener.onAlarmClick(alarm));
 
         // 设置开关事件
         holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             toggleListener.onAlarmToggle(alarm, isChecked);
         });
+
+        // 设置定位图标点击事件
+        holder.locationIcon.setOnClickListener(v -> locationIconClickListener.onLocationIconClick(alarm));
     }
 
     @Override
@@ -77,6 +88,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         TextView alarmAddress;
         TextView alarmRadius;
         SwitchMaterial alarmSwitch;
+        ImageView locationIcon;
 
         public AlarmViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +96,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
             alarmAddress = itemView.findViewById(R.id.alarmAddress);
             alarmRadius = itemView.findViewById(R.id.alarmRadius);
             alarmSwitch = itemView.findViewById(R.id.alarmSwitch);
+            locationIcon = itemView.findViewById(R.id.locationIcon);
         }
     }
 }

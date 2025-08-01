@@ -33,7 +33,7 @@ public class BaiduLocationService {
     private static Context appContext;
 
     public interface OnLocationChangedListener {
-        void onLocationChanged(double latitude, double longitude, float accuracy);
+        void onLocationChanged(double latitude, double longitude, float accuracy, String address);
         void onAlarmTriggered(Alarm alarm, double latitude, double longitude);
         void onLocationError(int errorCode);
     }
@@ -112,12 +112,16 @@ public class BaiduLocationService {
                     double latitude = bdLocation.getLatitude();
                     double longitude = bdLocation.getLongitude();
                     float accuracy = bdLocation.getRadius();
+                    String address = bdLocation.getAddrStr(); // 获取地址信息
+                    if (address == null || address.isEmpty()) {
+                        address = "未知位置";
+                    }
 
-                    Log.d(TAG, "Location received: " + latitude + ", " + longitude + ", accuracy: " + accuracy);
+                    Log.d(TAG, "Location received: " + latitude + ", " + longitude + ", accuracy: " + accuracy + ", address: " + address);
 
                     // 通知位置变化
                     if (listener != null) {
-                        listener.onLocationChanged(latitude, longitude, accuracy);
+                        listener.onLocationChanged(latitude, longitude, accuracy, address);
                     }
 
                     // 检查是否触发闹钟

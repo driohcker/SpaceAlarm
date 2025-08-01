@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 public class PermissionManager {
     public static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
     public static final String[] LOCATION_PERMISSIONS = {
+            Manifest.permission.POST_NOTIFICATIONS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_WIFI_STATE,

@@ -34,10 +34,10 @@ public class ForegroundLocationService extends Service {
             locationService = BaiduLocationService.getInstance(getApplicationContext());
             locationService.setOnLocationChangedListener(new BaiduLocationService.OnLocationChangedListener() {
                 @Override
-                public void onLocationChanged(double latitude, double longitude, float accuracy) {
-                    Log.d(TAG, "位置更新: " + latitude + ", " + longitude);
-                    // 更新前台通知内容
-                    updateNotification("当前位置: " + latitude + ", " + longitude);
+                public void onLocationChanged(double latitude, double longitude, float accuracy, String address) {
+                    Log.d(TAG, "位置更新: " + latitude + ", " + longitude + ", 地址: " + address);
+                    // 更新前台通知内容，使用地址信息
+                    updateNotification("当前位置: " + address);
                 }
 
                 @Override

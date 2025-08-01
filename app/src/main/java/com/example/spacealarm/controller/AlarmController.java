@@ -6,7 +6,7 @@ import com.example.spacealarm.service.AlarmService;
 
 import java.util.List;
 
-public class MainController {
+public class AlarmController {
     private final AlarmService alarmService;
     private final Context context;
     private MainViewCallback viewCallback;
@@ -18,7 +18,7 @@ public class MainController {
         void onError(String error);
     }
 
-    public MainController(Context context) {
+    public AlarmController(Context context) {
         this.context = context;
         this.alarmService = new AlarmService(context);
     }

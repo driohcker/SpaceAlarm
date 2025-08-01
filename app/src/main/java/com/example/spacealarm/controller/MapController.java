@@ -192,7 +192,7 @@ public class MapController {
         // 设置定位回调
         locationService.setOnLocationChangedListener(new BaiduLocationService.OnLocationChangedListener() {
             @Override
-            public void onLocationChanged(double latitude, double longitude, float accuracy) {
+            public void onLocationChanged(double latitude, double longitude, float accuracy, String address) {
                 LatLng currentLocation = new LatLng(latitude, longitude);
 
                 // 使用BaiduMapManager更新地图位置
@@ -497,4 +497,18 @@ public class MapController {
     public LatLng getLastClickedPosition() {
         return lastClickedPosition;
     }
+
+    // 在MapController类中添加showAlarmLocation方法
+    public void showAlarmLocation(long alarmId) {
+        // 根据alarmId获取闹钟对象
+        Alarm alarm = alarmService.getAlarmById(alarmId);
+        if (alarm != null) {
+            LatLng alarmLocation = new LatLng(alarm.getLatitude(), alarm.getLongitude());
+            // 定位到闹钟位置
+            baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(alarmLocation, 15));
+            // 在地图上标记闹钟位置
+            updateAlarmMarker(alarm);
+        }
+    }
 }
+
