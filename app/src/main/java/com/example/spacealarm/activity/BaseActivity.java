@@ -1,6 +1,7 @@
 package com.example.spacealarm.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacealarm.R;
 import com.example.spacealarm.service.BaiduLocationService;
+import com.example.spacealarm.service.ForegroundLocationService;
 import com.example.spacealarm.service.manager.BaiduMapManager;
 import com.example.spacealarm.service.manager.PermissionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,6 +27,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
 
     protected void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -56,4 +62,5 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract void onPermissionsResult(boolean granted);
+
 }

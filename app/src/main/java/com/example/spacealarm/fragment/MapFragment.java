@@ -22,7 +22,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.example.spacealarm.R;
-import com.example.spacealarm.activity.widget.CustomToolbarManager;
+import com.example.spacealarm.service.manager.CustomToolbarManager;
 import com.example.spacealarm.controller.MapController;
 import com.example.spacealarm.entity.Alarm;
 import com.example.spacealarm.service.AlarmService;
@@ -36,6 +36,8 @@ import com.baidu.mapapi.search.poi.PoiResult;
 import java.util.List;
 
 public class MapFragment extends Fragment implements MapController.OnMapInteractionListener {
+
+    private static String TAG = "MapFragment";
     private MapView mMapView = null;
     private BaiduMap mBaiduMap = null;
 
@@ -94,6 +96,8 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
         CustomToolbarManager.setMapFragment(this);
 
+
+
         return view;
     }
 
@@ -110,7 +114,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
             }else{
                 mapController.centerToMyLocation();
             }
-            mapController.startLocation();
+            //mapController.startLocation();
         }
         // 检查定位权限
         checkLocationPermission();

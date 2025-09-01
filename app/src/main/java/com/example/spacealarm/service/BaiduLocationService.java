@@ -82,11 +82,12 @@ public class BaiduLocationService {
 
         // 配置定位参数
         LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
         option.setCoorType("bd09ll"); // 百度坐标系
         option.setScanSpan(5000); // 5秒扫描一次
         option.setIsNeedAddress(true); // 需要地址信息
         option.setIsNeedLocationDescribe(true); // 需要位置描述
+        //option.setNeedDeviceDirect(true); // 需要设备方向结果
         option.setOpenGps(true); // 打开GPS
         option.setLocationNotify(true); // 当GPS有效时按照1次/秒的频率输出GPS结果
         option.setIsNeedLocationPoiList(true); // 需要POI信息
@@ -96,6 +97,12 @@ public class BaiduLocationService {
 
         locationClient.setLocOption(option);
 
+        Log.d(TAG, "启动locationservice中");
+        startLocation();
+        Log.d(TAG, "启动locatonservice成功");
+
+
+
         // 设置定位监听器
         locationClient.registerLocationListener(new BDAbstractLocationListener() {
             @Override
@@ -104,6 +111,8 @@ public class BaiduLocationService {
                     Log.e(TAG, "BDLocation is null");
                     return;
                 }
+
+                //Log.d(TAG, "定位中");
 
                 if (bdLocation.getLocType() == BDLocation.TypeGpsLocation ||
                         bdLocation.getLocType() == BDLocation.TypeNetWorkLocation ||

@@ -12,10 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.spacealarm.R;
-import com.example.spacealarm.activity.MainActivity;
 import com.example.spacealarm.fragment.AlarmFragment;
 import com.example.spacealarm.fragment.MapFragment;
 import com.example.spacealarm.fragment.SettingsFragment;
+import com.example.spacealarm.service.manager.CustomToolbarManager;
 
 public class CustomBottomNavigation {
 

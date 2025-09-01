@@ -1,4 +1,4 @@
-package com.example.spacealarm.activity.widget;
+package com.example.spacealarm.service.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -41,6 +41,8 @@ import java.util.List;
 import com.baidu.mapapi.search.core.PoiInfo;
 
 public class MapController {
+
+    private static String TAG = "MapController";
     private final Context context;
     private final BaiduMap baiduMap;
     private final MapView mapView;
@@ -196,8 +198,10 @@ public class MapController {
                 LatLng currentLocation = new LatLng(latitude, longitude);
 
                 // 使用BaiduMapManager更新地图位置
-                BaiduMapManager.centerMapToLocation(baiduMap, latitude, longitude, 15.0f);
-                BaiduMapManager.updateMyLocation(baiduMap, latitude, longitude, accuracy);
+                //BaiduMapManager.centerMapToLocation(baiduMap, latitude, longitude, 15.0f);
+                //BaiduMapManager.updateMyLocation(baiduMap, latitude, longitude, accuracy);
+
+                showMyLocation();
 
                 if (listener != null) {
                     listener.onLocationUpdate(currentLocation);
@@ -414,14 +418,14 @@ public class MapController {
 
     public void onPause() {
         mapView.onPause();
-        stopLocation();
+        //stopLocation();
     }
 
     public void onDestroy() {
         if (geoCoder != null) {
             geoCoder.destroy();
         }
-        locationService.stopLocation();
+        //locationService.stopLocation();
         mapView.onDestroy();
     }
 
@@ -463,19 +467,21 @@ public class MapController {
         if (!locationService.isStarted()) {
             locationService.startLocation();
         }
-        
+
+        //Log.e(TAG, "hello");
+
         // 尝试获取最后已知的位置
         BDLocation lastLocation = locationService.getLastKnownLocation();
         if (lastLocation != null) {
             double latitude = lastLocation.getLatitude();
             double longitude = lastLocation.getLongitude();
             float accuracy = lastLocation.getRadius();
-            
+
             // 将地图中心移动到最后已知位置
             LatLng currentLocation = new LatLng(latitude, longitude);
-            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(currentLocation, 15.0f);
+            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(currentLocation, 18.0f);
             baiduMap.animateMapStatus(mapStatusUpdate);
-            
+
             // 更新我的位置标记
             MyLocationData locationData = new MyLocationData.Builder()
                     .latitude(latitude)
@@ -487,12 +493,44 @@ public class MapController {
         } else {
             // 如果没有最后已知位置，则请求一次定位更新
             locationService.requestLocation();
-            
+
             // 显示提示信息
             Toast.makeText(context, "正在获取您的位置...", Toast.LENGTH_SHORT).show();
         }
     }
-    
+
+    public void showMyLocation(){
+        // 确保定位服务已启动
+        if (!locationService.isStarted()) {
+            locationService.startLocation();
+        }
+
+        //Log.e(TAG, "hello");
+
+        // 尝试获取最后已知的位置
+        BDLocation lastLocation = locationService.getLastKnownLocation();
+        if (lastLocation != null) {
+            double latitude = lastLocation.getLatitude();
+            double longitude = lastLocation.getLongitude();
+            float accuracy = lastLocation.getRadius();
+
+            // 更新我的位置标记
+            MyLocationData locationData = new MyLocationData.Builder()
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .accuracy(accuracy)
+                    .direction(0)
+                    .build();
+            baiduMap.setMyLocationData(locationData);
+        } else {
+            // 如果没有最后已知位置，则请求一次定位更新
+            locationService.requestLocation();
+
+            // 显示提示信息
+            //Toast.makeText(context, "正在获取您的位置...", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     // 获取最后点击的位置
     public LatLng getLastClickedPosition() {
         return lastClickedPosition;

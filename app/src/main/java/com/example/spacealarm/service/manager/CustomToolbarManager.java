@@ -1,4 +1,4 @@
-package com.example.spacealarm.activity.widget;
+package com.example.spacealarm.service.manager;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import com.example.spacealarm.R;
+import com.example.spacealarm.activity.widget.SearchHistoryAdapter;
 import com.example.spacealarm.fragment.AlarmFragment;
 import com.example.spacealarm.fragment.MapFragment;
 import com.example.spacealarm.fragment.SettingsFragment;
@@ -23,13 +24,12 @@ import com.example.spacealarm.service.BaiduLocationService;
 
 // 添加必要的导入
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.spacealarm.R;
+
 import java.util.List;
 
 public class CustomToolbarManager {
