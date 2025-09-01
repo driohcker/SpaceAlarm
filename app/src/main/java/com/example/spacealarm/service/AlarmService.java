@@ -8,12 +8,20 @@ import com.example.spacealarm.entity.Alarm;
 import com.example.spacealarm.mapper.AlarmMapper;
 import com.example.spacealarm.mapper.impl.AlarmMapperImpl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AlarmService {
     private static final String TAG = "AlarmService";
     private final AlarmMapper alarmMapper;
     private final Context context;
+    
+    // 两次触发之间的最小间隔（毫秒），设置为5分钟
+    public static final long MIN_ALARM_INTERVAL = 5 * 60 * 1000; // 5分钟
+    
+    // 移除：内存中的触发时间存储，改用持久化存储
+    // private final Map<Integer, Long> lastAlarmTriggerTimes = new HashMap<>();
 
     public AlarmService(Context context) {
         this.context = context;
@@ -95,12 +103,29 @@ public class AlarmService {
         List<Alarm> enabledAlarms = getEnabledAlarms();
 
         for (Alarm alarm : enabledAlarms) {
-            if (isInAlarmRange(alarm, currentLatitude, currentLongitude)) {
+            if (isInAlarmRange(alarm, currentLatitude, currentLongitude) && shouldTriggerAlarm(alarm)) {
                 Log.d(TAG, "Alarm triggered: " + alarm.getTitle());
+                updateLastTriggerTime(alarm);
                 return alarm;
             }
         }
         return null;
+    }
+    
+    // 检查是否应该触发闹钟
+    private boolean shouldTriggerAlarm(Alarm alarm) {
+        long currentTime = System.currentTimeMillis();
+        // 修改：从数据库获取最后触发时间，替代从内存Map中获取
+        Long lastTriggerTime = alarmMapper.getAlarmLastTriggerTime(alarm.getId());
+        
+        // 如果这是第一次触发，或者距离上次触发已经超过最小间隔时间，则允许触发
+        return lastTriggerTime == null || (currentTime - lastTriggerTime) > MIN_ALARM_INTERVAL;
+    }
+    
+    // 更新闹钟的最后触发时间
+    private void updateLastTriggerTime(Alarm alarm) {
+        // 修改：使用数据库存储最后触发时间，替代内存Map存储
+        alarmMapper.updateAlarmLastTriggerTime(alarm.getId(), System.currentTimeMillis());
     }
 
     // 获取闹钟数量

@@ -10,9 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacealarm.R;
-import com.example.spacealarm.service.BaiduLocationService;
-import com.example.spacealarm.service.ForegroundLocationService;
-import com.example.spacealarm.service.manager.BaiduMapManager;
+import com.example.spacealarm.AppApplication;
 import com.example.spacealarm.service.manager.PermissionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -23,8 +21,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         checkPermissions();
-
-
     }
 
     @Override
@@ -49,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void checkPermissions() {
-        if (!PermissionManager.checkLocationPermissions(this)) {
+        if (!AppApplication.isPermissionsGranted && !PermissionManager.checkLocationPermissions(this)) {
             PermissionManager.requestLocationPermissions(this);
         }
     }
@@ -62,5 +58,4 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected abstract void onPermissionsResult(boolean granted);
-
 }

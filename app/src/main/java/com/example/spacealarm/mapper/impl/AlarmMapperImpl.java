@@ -49,4 +49,16 @@ public class AlarmMapperImpl implements AlarmMapper {
     public int getAlarmCount() {
         return dbHelper.getAlarmCount();
     }
+    
+    // 新增：实现更新闹钟最后触发时间方法
+    @Override
+    public void updateAlarmLastTriggerTime(long alarmId, long triggerTime) {
+        dbHelper.updateAlarmLastTriggerTime(alarmId, triggerTime);
+    }
+    
+    // 新增：实现获取闹钟最后触发时间方法
+    @Override
+    public Long getAlarmLastTriggerTime(long alarmId) {
+        return dbHelper.getAlarmLastTriggerTime(alarmId);
+    }
 }

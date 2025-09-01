@@ -92,6 +92,31 @@
                 android:trackTint="#BDBDBD" />
 
         </LinearLayout>
+        
+        <!-- 添加后台服务开关 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="启用后台服务"
+                android:textColor="#212121"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/editBackgroundServiceEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumbTint="#757575"
+                android:trackTint="#BDBDBD" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

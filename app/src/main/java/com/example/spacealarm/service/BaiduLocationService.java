@@ -1,61 +1,61 @@
 package com.example.spacealarm.service;
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.model.LatLng;
 import com.example.spacealarm.entity.Alarm;
+import com.example.spacealarm.service.listener.AlarmTriggerListener;
+import com.example.spacealarm.service.listener.LocationListener;
+// 修改导入语句
 import com.example.spacealarm.service.manager.BaiduMapManager;
+// 删除错误的导入
+// import com.example.spacealarm.service.manager.NotificationManager;
+// 添加正确的导入
 import com.example.spacealarm.service.NotificationService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BaiduLocationService {
     private static final String TAG = "BaiduLocationService";
-
     private static BaiduLocationService instance;
-
+    private final Context appContext;
     private LocationClient locationClient;
-    private AlarmService alarmService;
-    private NotificationService notificationService; // 新增通知服务实例
-
-    private OnLocationChangedListener listener;
+    private final AlarmService alarmService;
+    // 修改成员变量声明
+    private final NotificationService notificationService;
+    
+    // 使用CopyOnWriteArrayList确保线程安全
+    private final List<LocationListener> locationListeners = new CopyOnWriteArrayList<>();
+    private final List<AlarmTriggerListener> alarmTriggerListeners = new CopyOnWriteArrayList<>();
+    
     private boolean isStarted = false;
-
-    private static Context appContext;
-
-    public interface OnLocationChangedListener {
-        void onLocationChanged(double latitude, double longitude, float accuracy, String address);
-        void onAlarmTriggered(Alarm alarm, double latitude, double longitude);
-        void onLocationError(int errorCode);
-    }
 
     // 私有构造函数防止外部实例化
     private BaiduLocationService(Context context) throws Exception {
-        this.alarmService = new AlarmService(context);
-        this.notificationService = new NotificationService(context); // 初始化通知服务
-        initLocationClient(context);
+        this.appContext = context.getApplicationContext();
+        this.alarmService = new AlarmService(appContext);
+        // 修改初始化
+        this.notificationService = new NotificationService(appContext);
+        initLocationClient();
     }
 
     // 单例获取方法
     public static BaiduLocationService getInstance(Context context) {
         // 强制使用Application上下文
-        appContext = context.getApplicationContext();
+        Context appContext = context.getApplicationContext();
 
         if (instance == null) {
             synchronized (BaiduLocationService.class) {
                 if (instance == null) {
                     // 确保SDK已初始化并同意隐私政策
                     if (!BaiduMapManager.isInitialized()) {
-                        Log.d(TAG, "未初始化BaiduMapManager，现在开始初始化BaiduMapManager");
+                        Log.d(TAG, "未初始化BaiduMapManager，现在开始初始化");
                         BaiduMapManager.initialize(appContext);
                     }
 
@@ -66,15 +66,13 @@ public class BaiduLocationService {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-
                 }
             }
         }
         return instance;
     }
 
-    private void initLocationClient(Context context) throws Exception {
-
+    private void initLocationClient() throws Exception {
         // 使用Application上下文创建LocationClient
         Log.d(TAG, "开始创建locationClient对象");
         locationClient = new LocationClient(appContext);
@@ -87,7 +85,6 @@ public class BaiduLocationService {
         option.setScanSpan(5000); // 5秒扫描一次
         option.setIsNeedAddress(true); // 需要地址信息
         option.setIsNeedLocationDescribe(true); // 需要位置描述
-        //option.setNeedDeviceDirect(true); // 需要设备方向结果
         option.setOpenGps(true); // 打开GPS
         option.setLocationNotify(true); // 当GPS有效时按照1次/秒的频率输出GPS结果
         option.setIsNeedLocationPoiList(true); // 需要POI信息
@@ -97,12 +94,6 @@ public class BaiduLocationService {
 
         locationClient.setLocOption(option);
 
-        Log.d(TAG, "启动locationservice中");
-        startLocation();
-        Log.d(TAG, "启动locatonservice成功");
-
-
-
         // 设置定位监听器
         locationClient.registerLocationListener(new BDAbstractLocationListener() {
             @Override
@@ -111,8 +102,6 @@ public class BaiduLocationService {
                     Log.e(TAG, "BDLocation is null");
                     return;
                 }
-
-                //Log.d(TAG, "定位中");
 
                 if (bdLocation.getLocType() == BDLocation.TypeGpsLocation ||
                         bdLocation.getLocType() == BDLocation.TypeNetWorkLocation ||
@@ -128,19 +117,16 @@ public class BaiduLocationService {
 
                     Log.d(TAG, "Location received: " + latitude + ", " + longitude + ", accuracy: " + accuracy + ", address: " + address);
 
-                    // 通知位置变化
-                    if (listener != null) {
-                        listener.onLocationChanged(latitude, longitude, accuracy, address);
-                    }
+                    // 通知所有位置监听器
+                    notifyLocationChanged(latitude, longitude, accuracy, address);
 
                     // 检查是否触发闹钟
                     checkAlarmTrigger(latitude, longitude);
 
                 } else {
                     Log.e(TAG, "Location error, type: " + bdLocation.getLocType());
-                    if (listener != null) {
-                        listener.onLocationError(bdLocation.getLocType());
-                    }
+                    // 通知所有位置监听器
+                    notifyLocationError(bdLocation.getLocType());
                 }
             }
         });
@@ -150,26 +136,88 @@ public class BaiduLocationService {
         Alarm triggeredAlarm = alarmService.checkAllAlarms(latitude, longitude);
         if (triggeredAlarm != null) {
             Log.d(TAG, "Alarm triggered: " + triggeredAlarm.getTitle());
-            // 显示通知
+            // 修改通知调用
             notificationService.showAlarmNotification(triggeredAlarm);
-            // 通知监听器
-            if (listener != null) {
-                listener.onAlarmTriggered(triggeredAlarm, latitude, longitude);
+            // 通知所有闹钟触发监听器
+            notifyAlarmTriggered(triggeredAlarm, latitude, longitude);
+        }
+    }
+
+    // 通知所有位置监听器
+    private void notifyLocationChanged(double latitude, double longitude, float accuracy, String address) {
+        for (LocationListener listener : locationListeners) {
+            try {
+                listener.onLocationChanged(latitude, longitude, accuracy, address);
+            } catch (Exception e) {
+                Log.e(TAG, "Location listener error: " + e.getMessage());
             }
         }
     }
 
+    // 通知所有位置错误监听器
+    private void notifyLocationError(int errorCode) {
+        for (LocationListener listener : locationListeners) {
+            try {
+                listener.onLocationError(errorCode);
+            } catch (Exception e) {
+                Log.e(TAG, "Location error listener error: " + e.getMessage());
+            }
+        }
+    }
+
+    // 通知所有闹钟触发监听器
+    private void notifyAlarmTriggered(Alarm alarm, double latitude, double longitude) {
+        for (AlarmTriggerListener listener : alarmTriggerListeners) {
+            try {
+                listener.onAlarmTriggered(alarm, latitude, longitude);
+            } catch (Exception e) {
+                Log.e(TAG, "Alarm trigger listener error: " + e.getMessage());
+            }
+        }
+    }
+
+    // 监听器管理方法
+    public void addLocationListener(LocationListener listener) {
+        if (listener != null && !locationListeners.contains(listener)) {
+            locationListeners.add(listener);
+        }
+    }
+
+    public void removeLocationListener(LocationListener listener) {
+        if (listener != null) {
+            locationListeners.remove(listener);
+        }
+    }
+
+    public void addAlarmTriggerListener(AlarmTriggerListener listener) {
+        if (listener != null && !alarmTriggerListeners.contains(listener)) {
+            alarmTriggerListeners.add(listener);
+        }
+    }
+
+    public void removeAlarmTriggerListener(AlarmTriggerListener listener) {
+        if (listener != null) {
+            alarmTriggerListeners.remove(listener);
+        }
+    }
+
+    // 定位控制方法
     public void startLocation() {
         if (!isStarted && locationClient != null) {
-            locationClient.start();
-            isStarted = true;
-            Log.d(TAG, "Baidu location service started");
+            try {
+                locationClient.start();
+                isStarted = true;
+                Log.d(TAG, "Baidu location service started");
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to start location service: " + e.getMessage(), e);
+            }
         }
     }
 
     public void stopLocation() {
         if (locationClient != null && locationClient.isStarted()) {
             locationClient.stop();
+            isStarted = false;
             Log.d(TAG, "定位已停止");
         }
     }
@@ -183,10 +231,6 @@ public class BaiduLocationService {
         return isStarted;
     }
 
-    public void setOnLocationChangedListener(OnLocationChangedListener listener) {
-        this.listener = listener;
-    }
-
     public BDLocation getLastKnownLocation() {
         if (locationClient != null) {
             return locationClient.getLastKnownLocation();
@@ -197,33 +241,6 @@ public class BaiduLocationService {
     public void requestLocation() {
         if (locationClient != null && isStarted) {
             locationClient.requestLocation();
-        }
-    }
-
-    // 新增：设置AlarmService的方法，支持依赖注入
-    public void setAlarmService(AlarmService alarmService) {
-        this.alarmService = alarmService;
-    }
-
-    // 更新地图上的我的位置
-    public static void updateMyLocation(BaiduMap baiduMap, double latitude, double longitude, float accuracy) {
-        if (baiduMap != null) {
-            MyLocationData locationData = new MyLocationData.Builder()
-                    .latitude(latitude)
-                    .longitude(longitude)
-                    .accuracy(accuracy)
-                    .direction(0)
-                    .build();
-            baiduMap.setMyLocationData(locationData);
-        }
-    }
-
-    // 将地图中心移动到指定位置
-    public static void centerMapToLocation(BaiduMap baiduMap, double latitude, double longitude, float zoom) {
-        if (baiduMap != null) {
-            LatLng location = new LatLng(latitude, longitude);
-            MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(location, zoom);
-            baiduMap.animateMapStatus(mapStatusUpdate);
         }
     }
 

@@ -56,7 +56,6 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
         try {
             mapController = new MapController(getActivity(), mMapView);
-
             mapController.startLocation();
             mapController.setOnMapInteractionListener(this);
 
@@ -65,7 +64,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
             if (bundle != null && bundle.containsKey("alarmId")) {
                 long alarmId = bundle.getLong("alarmId");
                 mapController.showAlarmLocation(alarmId);
-            }else{
+            } else {
                 mapController.centerToMyLocation();
             }
         } catch (Exception e) {

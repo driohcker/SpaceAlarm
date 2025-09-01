@@ -25,14 +25,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!-- 只保留MainActivity声明 -->
+        <!-- 新增：权限请求Activity作为启动入口 -->
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.PermissionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        
+        <!-- 注册新的Activity -->
+        <activity android:name=".activity.OptimizeSettingsActivity" />
+        
+        <!-- 修改：MainActivity不再是启动入口 -->
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="false">
         </activity>
 
         <service
@@ -51,6 +60,4 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="D7Cre6dsmNDCyMShoFaBXaH71ARdet5M" />
     </application>
-
-
 </manifest>

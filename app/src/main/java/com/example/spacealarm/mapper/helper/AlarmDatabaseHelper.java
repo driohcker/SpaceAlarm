@@ -13,9 +13,13 @@ import java.util.List;
 
 public class AlarmDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "space_alarm.db";
-    private static final int DATABASE_VERSION = 1;
+    // 增加数据库版本号，用于升级
+    private static final int DATABASE_VERSION = 2;
     private static final String TABLE_ALARMS = "alarms";
-
+    
+    // 新增：最后触发时间表
+    private static final String TABLE_ALARM_TRIGGER_TIMES = "alarm_trigger_times";
+    
     // 列名定义
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_TITLE = "title";
@@ -28,6 +32,10 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_IS_RING = "is_ring";
     private static final String COLUMN_IS_ENABLED = "is_enabled";
     private static final String COLUMN_CREATED_TIME = "created_time";
+    
+    // 新增：最后触发时间表列名
+    private static final String COLUMN_ALARM_ID = "alarm_id";
+    private static final String COLUMN_LAST_TRIGGER_TIME = "last_trigger_time";
 
     // 创建表的SQL语句
     private static final String CREATE_TABLE_ALARMS = "CREATE TABLE " + TABLE_ALARMS + " (" +
@@ -44,6 +52,14 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
             COLUMN_CREATED_TIME + " INTEGER NOT NULL" +
             ")";
 
+    // 新增：创建最后触发时间表的SQL语句
+    private static final String CREATE_TABLE_ALARM_TRIGGER_TIMES = "CREATE TABLE " + TABLE_ALARM_TRIGGER_TIMES + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_ALARM_ID + " INTEGER NOT NULL, " +
+            COLUMN_LAST_TRIGGER_TIME + " INTEGER NOT NULL, " +
+            "FOREIGN KEY(" + COLUMN_ALARM_ID + ") REFERENCES " + TABLE_ALARMS + "(" + COLUMN_ID + ") ON DELETE CASCADE" +
+            ")";
+
     public AlarmDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -51,12 +67,16 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ALARMS);
+        // 新增：创建最后触发时间表
+        db.execSQL(CREATE_TABLE_ALARM_TRIGGER_TIMES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALARMS);
-        onCreate(db);
+        if (oldVersion < 2) {
+            // 新增：当数据库版本从1升级到2时，创建最后触发时间表
+            db.execSQL(CREATE_TABLE_ALARM_TRIGGER_TIMES);
+        }
     }
 
     // 插入闹钟
@@ -207,5 +227,48 @@ public class AlarmDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return count;
+    }
+
+    // 新增：更新闹钟最后触发时间
+    public void updateAlarmLastTriggerTime(long alarmId, long triggerTime) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        // 先检查是否已存在该闹钟的触发时间记录
+        Cursor cursor = db.query(TABLE_ALARM_TRIGGER_TIMES, null, 
+                COLUMN_ALARM_ID + " = ?", new String[]{String.valueOf(alarmId)}, 
+                null, null, null);
+        
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_LAST_TRIGGER_TIME, triggerTime);
+        
+        if (cursor.moveToFirst()) {
+            // 已存在记录，更新
+            db.update(TABLE_ALARM_TRIGGER_TIMES, values, 
+                    COLUMN_ALARM_ID + " = ?", new String[]{String.valueOf(alarmId)});
+        } else {
+            // 不存在记录，插入
+            values.put(COLUMN_ALARM_ID, alarmId);
+            db.insert(TABLE_ALARM_TRIGGER_TIMES, null, values);
+        }
+        
+        cursor.close();
+        db.close();
+    }
+    
+    // 新增：获取闹钟最后触发时间
+    public Long getAlarmLastTriggerTime(long alarmId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_ALARM_TRIGGER_TIMES, new String[]{COLUMN_LAST_TRIGGER_TIME}, 
+                COLUMN_ALARM_ID + " = ?", new String[]{String.valueOf(alarmId)}, 
+                null, null, null);
+        
+        Long lastTriggerTime = null;
+        if (cursor.moveToFirst()) {
+            lastTriggerTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_LAST_TRIGGER_TIME));
+        }
+        
+        cursor.close();
+        db.close();
+        return lastTriggerTime;
     }
 }

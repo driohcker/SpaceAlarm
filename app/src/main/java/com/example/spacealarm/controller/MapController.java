@@ -32,8 +32,10 @@ import com.example.spacealarm.R;
 import com.example.spacealarm.entity.Alarm;
 import com.example.spacealarm.service.AlarmService;
 import com.example.spacealarm.service.BaiduLocationService;
+import com.example.spacealarm.service.listener.LocationListener;
 import com.example.spacealarm.service.manager.BaiduMapManager;
-
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +57,28 @@ public class MapController {
     private OnMapInteractionListener listener;
     private GeoCoder geoCoder;
 
+    // 内部定位监听器实现
+    private final LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(double latitude, double longitude, float accuracy, String address) {
+            LatLng currentLocation = new LatLng(latitude, longitude);
+            showMyLocation();
+
+            if (listener != null) {
+                listener.onLocationUpdate(currentLocation);
+            }
+        }
+
+        @Override
+        public void onLocationError(int errorCode) {
+            // 处理定位错误
+        }
+    };
+
     public interface OnMapInteractionListener {
         void onMapClick(LatLng latLng, String address);
         void onMarkerClick(Alarm alarm);
         void onLocationUpdate(LatLng currentLocation);
-        // 添加新方法用于处理POI标记点击
         void onPoiMarkerClick(LatLng latLng, String name, String address);
     }
 
@@ -102,8 +121,22 @@ public class MapController {
                     tempMarker.remove();
                 }
                 
-                // 创建临时标记图标
-                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_temp_marker);
+                // 创建临时标记图标 - 修改这部分代码以固定图标大小
+                // 1. 首先获取原始图标
+                BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_add_32);
+                
+                // 2. 创建一个固定大小的图标
+                // 这里设置宽高为60px，可以根据需要调整
+                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
+                        Bitmap.createScaledBitmap(
+                                originalDescriptor.getBitmap(), 
+                                60, 60, // 设置固定的宽度和高度
+                                true // 是否使用滤波
+                        )
+                );
+                
+                // 3. 释放原始资源以避免内存泄漏
+                originalDescriptor.recycle();
                 
                 // 创建标记选项
                 MarkerOptions markerOptions = new MarkerOptions()
@@ -118,7 +151,7 @@ public class MapController {
                 // 获取点击位置的地址
                 getAddressFromLatLng(latLng);
             }
-
+            
             @Override
             public void onMapPoiClick(MapPoi mapPoi) {
                 if (listener != null) {
@@ -191,33 +224,8 @@ public class MapController {
     }
 
     private void initLocation() {
-        // 设置定位回调
-        locationService.setOnLocationChangedListener(new BaiduLocationService.OnLocationChangedListener() {
-            @Override
-            public void onLocationChanged(double latitude, double longitude, float accuracy, String address) {
-                LatLng currentLocation = new LatLng(latitude, longitude);
-
-                // 使用BaiduMapManager更新地图位置
-                //BaiduMapManager.centerMapToLocation(baiduMap, latitude, longitude, 15.0f);
-                //BaiduMapManager.updateMyLocation(baiduMap, latitude, longitude, accuracy);
-
-                showMyLocation();
-
-                if (listener != null) {
-                    listener.onLocationUpdate(currentLocation);
-                }
-            }
-
-            @Override
-            public void onAlarmTriggered(Alarm alarm, double latitude, double longitude) {
-                // 处理闹钟触发逻辑
-            }
-
-            @Override
-            public void onLocationError(int errorCode) {
-                // 处理定位错误
-            }
-        });
+        // 注册定位监听器
+        locationService.addLocationListener(locationListener);
     }
 
     public void startLocation() {
@@ -234,8 +242,22 @@ public class MapController {
 
         LatLng location = new LatLng(alarm.getLatitude(), alarm.getLongitude());
 
-        // 创建标记图标
-        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_alarm_marker_32);
+        // 创建标记图标 - 修改这部分代码以固定图标大小
+        // 1. 首先获取原始图标
+        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_alarm_marker_32);
+        
+        // 2. 创建一个固定大小的图标
+        // 这里设置宽高为60px，可以根据需要调整
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
+                Bitmap.createScaledBitmap(
+                        originalDescriptor.getBitmap(), 
+                        60, 60, // 设置固定的宽度和高度
+                        true // 是否使用滤波
+                )
+        );
+        
+        // 3. 释放原始资源以避免内存泄漏
+        originalDescriptor.recycle();
 
         // 创建标记选项
         MarkerOptions markerOptions = new MarkerOptions()
@@ -275,13 +297,13 @@ public class MapController {
     private void showTextOverlay(LatLng center, String title){
         // 在标记下方添加文本覆盖物显示标题
         // 计算文本位置（在标记下方约30像素处）
-        LatLng textLocation = new LatLng(center.latitude - 0.0025, center.longitude);
+        LatLng textLocation = new LatLng(center.latitude - 0.0002, center.longitude);
 
         // 创建文本选项
         TextOptions textOptions = new TextOptions()
                 .position(textLocation)
                 .text(title)
-                .fontSize(20)
+                .fontSize(25)
                 .fontColor(0xFF333333)
                 .bgColor(0x00000000)  // 透明背景
                 .rotate(0);
@@ -328,8 +350,22 @@ public class MapController {
         LatLng location = poi.location;
         if (location == null) return;
     
-        // 创建POI标记图标
-        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_poi_marker);
+        // 创建POI标记图标 - 修改这部分代码以固定图标大小
+        // 1. 首先获取原始图标
+        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_poi_marker);
+        
+        // 2. 创建一个固定大小的图标
+        // 这里设置宽高为50px，可以根据需要调整
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
+                Bitmap.createScaledBitmap(
+                        originalDescriptor.getBitmap(), 
+                        50, 50, // 设置固定的宽度和高度
+                        true // 是否使用滤波
+                )
+        );
+        
+        // 3. 释放原始资源以避免内存泄漏
+        originalDescriptor.recycle();
     
         // 创建标记选项
         MarkerOptions markerOptions = new MarkerOptions()
@@ -422,6 +458,9 @@ public class MapController {
     }
 
     public void onDestroy() {
+        // 移除定位监听器
+        locationService.removeLocationListener(locationListener);
+        
         if (geoCoder != null) {
             geoCoder.destroy();
         }
@@ -468,8 +507,6 @@ public class MapController {
             locationService.startLocation();
         }
 
-        //Log.e(TAG, "hello");
-
         // 尝试获取最后已知的位置
         BDLocation lastLocation = locationService.getLastKnownLocation();
         if (lastLocation != null) {
@@ -505,8 +542,6 @@ public class MapController {
             locationService.startLocation();
         }
 
-        //Log.e(TAG, "hello");
-
         // 尝试获取最后已知的位置
         BDLocation lastLocation = locationService.getLastKnownLocation();
         if (lastLocation != null) {
@@ -525,9 +560,6 @@ public class MapController {
         } else {
             // 如果没有最后已知位置，则请求一次定位更新
             locationService.requestLocation();
-
-            // 显示提示信息
-            //Toast.makeText(context, "正在获取您的位置...", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -543,7 +575,7 @@ public class MapController {
         if (alarm != null) {
             LatLng alarmLocation = new LatLng(alarm.getLatitude(), alarm.getLongitude());
             // 定位到闹钟位置
-            baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(alarmLocation, 15));
+            baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(alarmLocation, 17));
             // 在地图上标记闹钟位置
             updateAlarmMarker(alarm);
         }

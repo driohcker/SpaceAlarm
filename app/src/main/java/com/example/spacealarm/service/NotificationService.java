@@ -23,6 +23,9 @@ public class NotificationService {
     private static final String CHANNEL_ID = "space_alarm_channel";
     private static final String CHANNEL_NAME = "空间闹钟提醒";
     private static final int NOTIFICATION_ID = 1001;
+    
+    // 新增：定义节奏型震动模式 - 震动两下
+    private static final long[] VIBRATION_PATTERN = {0, 500, 300, 500}; // 开始震动0ms，震动500ms，停300ms，再震动500ms
 
     private final Context context;
     private final NotificationManager notificationManager;
@@ -45,7 +48,8 @@ public class NotificationService {
             );
             channel.setDescription("空间闹钟提醒通知");
             channel.enableVibration(true);
-            channel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            // 修改震动模式，确保只震动两下
+            channel.setVibrationPattern(VIBRATION_PATTERN);
 
             notificationManager.createNotificationChannel(channel);
             Log.d(TAG, "通知渠道创建成功: " + CHANNEL_ID);
@@ -71,19 +75,18 @@ public class NotificationService {
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle("到达提醒地点: " + alarm.getTitle())
-                    .setContentText(alarm.getMessage() != null ? alarm.getMessage() : "您已到达设置的提醒地点")
+                    .setContentTitle("到达: " + alarm.getTitle())
+                    .setContentText(alarm.getAddress())
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
-                    .setOnlyAlertOnce(false);
+                    .setOnlyAlertOnce(true); // 修改为只提醒一次
 
             // 设置震动 (同时考虑全局设置和闹钟自身设置)
             boolean shouldVibrate = settingsController.isVibrationEnabled() && alarm.isVibrate();
             if (shouldVibrate) {
-                long[] vibrationPattern = {0, 1000, 500, 1000};
-                builder.setVibrate(vibrationPattern);
-                Log.d(TAG, "通知设置震动");
+                builder.setVibrate(VIBRATION_PATTERN);
+                Log.d(TAG, "通知设置震动（短震动两下）");
             }
 
             // 设置铃声 (同时考虑全局设置和闹钟自身设置)
@@ -106,8 +109,8 @@ public class NotificationService {
             if (shouldVibrate) {
                 Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 if (vibrator != null && vibrator.hasVibrator()) {
-                    vibrator.vibrate(1000);
-                    Log.d(TAG, "额外震动触发成功");
+                    vibrator.vibrate(VIBRATION_PATTERN, -1); // -1表示不重复震动
+                    Log.d(TAG, "额外震动触发成功（短震动两下）");
                 } else {
                     Log.e(TAG, "设备不支持震动");
                 }

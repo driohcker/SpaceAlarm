@@ -29,14 +29,24 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="空间闹钟"
                     android:textSize="18sp"
                     android:textColor="#333333"
                     android:textStyle="bold"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center_vertical"/>
+                <!-- 添加红色关闭按钮 -->
+                <ImageView
+                    android:id="@+id/close_app_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_off"
+                    android:contentDescription="关闭应用"
+                    android:padding="12dp"
+                    app:tint="#FF0000" />
             </LinearLayout>
 
             <!-- 搜索模式布局 -->

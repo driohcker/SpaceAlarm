@@ -10,6 +10,7 @@ public class SettingsController {
     private static final String KEY_ALARM_ENABLED = "alarm_enabled";
     private static final String KEY_VIBRATION_ENABLED = "vibration_enabled";
     private static final String KEY_SOUND_ENABLED = "sound_enabled";
+    private static final String KEY_BACKGROUND_SERVICE_ENABLED = "background_service_enabled";
 
     private static SettingsController instance;
     private final SharedPreferences sharedPreferences;
@@ -54,6 +55,17 @@ public class SettingsController {
 
     public void setSoundEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_SOUND_ENABLED, enabled).apply();
+        if (viewCallback != null) {
+            viewCallback.onSettingsChanged();
+        }
+    }
+
+    public boolean isBackgroundServiceEnabled() {
+        return sharedPreferences.getBoolean(KEY_BACKGROUND_SERVICE_ENABLED, true);
+    }
+
+    public void setBackgroundServiceEnabled(boolean enabled) {
+        sharedPreferences.edit().putBoolean(KEY_BACKGROUND_SERVICE_ENABLED, enabled).apply();
         if (viewCallback != null) {
             viewCallback.onSettingsChanged();
         }

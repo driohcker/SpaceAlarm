@@ -10,6 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import com.example.spacealarm.service.ForegroundLocationService;
+
 import com.example.spacealarm.R;
 import com.example.spacealarm.controller.SettingsController;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -18,7 +23,16 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
     private SwitchMaterial editAlarmEnabled;
     private SwitchMaterial editVibrationEnabled;
     private SwitchMaterial editSoundEnabled;
+    private SwitchMaterial editBackgroundServiceEnabled;
     private SettingsController settingsController;
+    
+    private Context mContext;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Nullable
     @Override
@@ -31,6 +45,7 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
         editAlarmEnabled = view.findViewById(R.id.editAlarmEnabled);
         editVibrationEnabled = view.findViewById(R.id.editVibrationEnabled);
         editSoundEnabled = view.findViewById(R.id.editSoundEnabled);
+        editBackgroundServiceEnabled = view.findViewById(R.id.editBackgroundServiceEnabled);
 
         // 加载设置
         loadSettings();
@@ -45,6 +60,7 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
         editAlarmEnabled.setChecked(settingsController.isAlarmEnabled());
         editVibrationEnabled.setChecked(settingsController.isVibrationEnabled());
         editSoundEnabled.setChecked(settingsController.isSoundEnabled());
+        editBackgroundServiceEnabled.setChecked(settingsController.isBackgroundServiceEnabled());
     }
 
     private void setupSwitchListeners() {
@@ -68,6 +84,26 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
                 settingsController.setSoundEnabled(isChecked);
             }
         });
+        
+        editBackgroundServiceEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settingsController.setBackgroundServiceEnabled(isChecked);
+                // 根据设置状态控制后台服务
+                Intent serviceIntent = new Intent(mContext, ForegroundLocationService.class);
+                if (isChecked) {
+                    // 启动服务
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mContext.startForegroundService(serviceIntent);
+                    } else {
+                        mContext.startService(serviceIntent);
+                    }
+                } else {
+                    // 停止服务
+                    mContext.stopService(serviceIntent);
+                }
+            }
+        });
     }
 
     @Override
@@ -76,3 +112,4 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
         loadSettings();
     }
 }
+

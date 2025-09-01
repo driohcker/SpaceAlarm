@@ -12,4 +12,10 @@ public interface AlarmMapper {
     int deleteAlarm(long alarmId);
     Alarm getAlarmById(long alarmId);
     int getAlarmCount();
+    
+    // 新增：更新闹钟最后触发时间
+    void updateAlarmLastTriggerTime(long alarmId, long triggerTime);
+    
+    // 新增：获取闹钟最后触发时间
+    Long getAlarmLastTriggerTime(long alarmId);
 }

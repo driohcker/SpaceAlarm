@@ -32,6 +32,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+// 在import部分添加需要的导入
+import android.os.Build;
+import android.content.Intent;
+import android.app.ActivityManager;
+import android.content.Context;
+import java.util.List;
+import com.example.spacealarm.service.ForegroundLocationService;
+import com.example.spacealarm.service.BaiduLocationService;
+
 public class CustomToolbarManager {
     private static Toolbar toolbar;
     private static View titleLayout;
@@ -42,6 +51,7 @@ public class CustomToolbarManager {
     private static SearchHistoryManager searchHistoryManager;
     private static PopupWindow searchHistoryPopup;
     private static SearchHistoryAdapter searchHistoryAdapter;
+    private static ImageView closeAppButton;
 
     // 初始化Toolbar管理器
     public static void setup(Activity activity) {
@@ -49,6 +59,12 @@ public class CustomToolbarManager {
         titleLayout = activity.findViewById(R.id.toolbar_title_layout);
         searchLayout = activity.findViewById(R.id.toolbar_search_layout);
         searchEditText = activity.findViewById(R.id.search_edit_text);
+        closeAppButton = activity.findViewById(R.id.close_app_button);
+
+        // 设置关闭应用按钮点击事件
+        if (closeAppButton != null) {
+            closeAppButton.setOnClickListener(v -> forceCloseApp(activity));
+        }
 
         // 初始化搜索历史管理器
         searchHistoryManager = SearchHistoryManager.getInstance(activity);
@@ -306,6 +322,32 @@ public class CustomToolbarManager {
     public static void hideSearchHistoryPopup() {
         if (searchHistoryPopup != null && searchHistoryPopup.isShowing()) {
             searchHistoryPopup.dismiss();
+        }
+    }
+
+    // 强制关闭应用和所有服务的方法
+    private static void forceCloseApp(Context context) {
+        try {
+            // 停止前台服务
+            Intent serviceIntent = new Intent(context, ForegroundLocationService.class);
+            context.stopService(serviceIntent);
+
+            // 停止定位服务
+            BaiduLocationService locationService = BaiduLocationService.getInstance(context);
+            if (locationService != null) {
+                locationService.stopLocation();
+            }
+
+            // 获取当前应用的进程ID
+            int pid = android.os.Process.myPid();
+            
+            // 杀死当前进程
+            android.os.Process.killProcess(pid);
+            
+            // 强制退出JVM
+            System.exit(0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

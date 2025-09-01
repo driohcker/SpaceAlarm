@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
+    android:background="#FAFAFA">
+
+    <!-- 应用图标 -->
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/icon"
+        android:layout_marginBottom="40dp"
+        android:contentDescription="应用图标" />
+
+    <!-- 标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="空间闹钟"
+        android:textSize="24sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <!-- 权限说明 -->
+    <TextView
+        android:id="@+id/permission_explanation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="为了提供准确的位置提醒服务，请您授权以下权限：\n\n• 位置权限 - 用于识别您的位置\n• 通知权限 - 用于发送闹钟提醒\n• 存储权限 - 用于保存地图数据\n• 电话状态权限 - 用于优化定位服务"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:lineSpacingExtra="8dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center" />
+
+    <!-- 权限列表 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="40dp">
+        
+        <!-- 权限项示例 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:background="@drawable/rounded_background_white"
+            android:layout_marginBottom="8dp">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/locate"
+                android:layout_marginRight="12dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="位置权限 (必需)"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:background="@drawable/rounded_background_white"
+            android:layout_marginBottom="8dp">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_notification"
+                android:layout_marginRight="12dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="通知权限 (必需)"
+                android:textSize="14sp"
+                android:textColor="#333333" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 百度地图政策协议 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+        <CheckBox
+            android:id="@+id/baidu_agreement_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp" />
+        <TextView
+            android:id="@+id/baidu_agreement_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="我已阅读并同意百度地图开放平台《隐私政策》和《用户协议》"
+            android:textSize="14sp"
+            android:textColor="#666666" />
+    </LinearLayout>
+
+    <!-- 授权按钮 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/authorize_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="授权并继续"
+        android:textSize="18sp"
+        android:textColor="#FAFAFA"
+        android:background="@drawable/rounded_background_blue"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="2dp"
+        app:backgroundTint="@null" /> <!-- 禁用默认背景着色 -->
+
+    <!-- 取消按钮 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="取消"
+        android:textSize="18sp"
+        android:textColor="#666"
+        android:background="@drawable/rounded_background_white_2"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="2dp"
+        app:backgroundTint="@null" /> <!-- 禁用默认背景着色 -->
+
+</LinearLayout>
