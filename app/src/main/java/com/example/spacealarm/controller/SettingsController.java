@@ -11,6 +11,8 @@ public class SettingsController {
     private static final String KEY_VIBRATION_ENABLED = "vibration_enabled";
     private static final String KEY_SOUND_ENABLED = "sound_enabled";
     private static final String KEY_BACKGROUND_SERVICE_ENABLED = "background_service_enabled";
+    // 新增：语音朗读开关
+    private static final String KEY_TEXT_TO_SPEECH_ENABLED = "text_to_speech_enabled";
 
     private static SettingsController instance;
     private final SharedPreferences sharedPreferences;
@@ -66,6 +68,19 @@ public class SettingsController {
 
     public void setBackgroundServiceEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_BACKGROUND_SERVICE_ENABLED, enabled).apply();
+        if (viewCallback != null) {
+            viewCallback.onSettingsChanged();
+        }
+    }
+
+    // 新增：获取语音朗读是否启用
+    public boolean isTextToSpeechEnabled() {
+        return sharedPreferences.getBoolean(KEY_TEXT_TO_SPEECH_ENABLED, true);
+    }
+
+    // 新增：设置语音朗读是否启用
+    public void setTextToSpeechEnabled(boolean enabled) {
+        sharedPreferences.edit().putBoolean(KEY_TEXT_TO_SPEECH_ENABLED, enabled).apply();
         if (viewCallback != null) {
             viewCallback.onSettingsChanged();
         }

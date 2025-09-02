@@ -57,7 +57,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/locate"
+                android:src="@drawable/locate_32"
                 android:layout_marginRight="12dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +78,7 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_notification"
+                android:src="@drawable/ic_notification_32"
                 android:layout_marginRight="12dp" />
             <TextView
                 android:layout_width="match_parent"
@@ -116,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="授权并继续"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="#FAFAFA"
         android:background="@drawable/rounded_background_blue"
         android:textAllCaps="false"
@@ -130,7 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:text="取消"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textColor="#666"
         android:background="@drawable/rounded_background_white_2"
         android:textAllCaps="false"

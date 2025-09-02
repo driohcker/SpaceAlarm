@@ -21,6 +21,13 @@
         android:layout_marginBottom="16dp"
         android:padding="16dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="基础设置"
+            android:textSize="16sp"
+            android:gravity="center"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,13 +99,35 @@
                 android:trackTint="#BDBDBD" />
 
         </LinearLayout>
-        
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_background_white"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="功能设置"
+            android:textSize="16sp"
+            android:gravity="center"/>
+
         <!-- 添加后台服务开关 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
             android:gravity="center_vertical">
 
             <TextView
@@ -111,6 +140,31 @@
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/editBackgroundServiceEnabled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:thumbTint="#757575"
+                android:trackTint="#BDBDBD" />
+
+        </LinearLayout>
+
+        <!-- 新增：语音朗读开关 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="启用语音朗读（测试中）"
+                android:textColor="#212121"
+                android:textSize="16sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/editTextToSpeechEnabled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:thumbTint="#757575"

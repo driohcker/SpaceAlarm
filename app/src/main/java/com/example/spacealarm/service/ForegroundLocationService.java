@@ -201,7 +201,7 @@ public class ForegroundLocationService extends Service {
         // 使用Builder创建通知
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("空间闹钟后台定位服务")
+                .setContentTitle("空间闹钟后台服务进行中")
                 .setContentText(content)
                 .setContentIntent(appPendingIntent)  // 设置点击通知的意图
                 .setPriority(NotificationCompat.PRIORITY_HIGH)  // 高优先级
@@ -212,7 +212,7 @@ public class ForegroundLocationService extends Service {
         
         // 使用BigTextStyle来确保通知展开时有足够的空间显示按钮
         NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
-        bigTextStyle.bigText(content + " ");
+        bigTextStyle.bigText(content + "\n（此通知未关闭即为后台服务进行中）");
         builder.setStyle(bigTextStyle);
         
         // 添加关闭应用按钮

@@ -30,11 +30,14 @@ public class NotificationService {
     private final Context context;
     private final NotificationManager notificationManager;
     private final SettingsController settingsController;
+    private final TextToSpeechManager textToSpeechManager;
 
     public NotificationService(Context context) {
         this.context = context;
         this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         this.settingsController = SettingsController.getInstance(context);
+        // 新增：初始化语音朗读管理器
+        this.textToSpeechManager = TextToSpeechManager.getInstance(context);
         createNotificationChannel();
     }
 
@@ -75,7 +78,7 @@ public class NotificationService {
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_notification)
-                    .setContentTitle("到达: " + alarm.getTitle())
+                    .setContentTitle("提醒: " + alarm.getTitle())
                     .setContentText(alarm.getAddress())
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(pendingIntent)
@@ -101,6 +104,12 @@ public class NotificationService {
             if (notificationManager != null) {
                 notificationManager.notify(NOTIFICATION_ID, builder.build());
                 Log.d(TAG, "通知成功发送，ID: " + NOTIFICATION_ID);
+
+                // 新增：检查是否启用了语音朗读，如果启用则朗读通知内容
+                if (settingsController.isTextToSpeechEnabled()) {
+                    String message = "提醒: " + alarm.getTitle() + "，" + "位置: "+ alarm.getAddress();
+                    textToSpeechManager.speak(message);
+                }
             } else {
                 Log.e(TAG, "通知管理器为空，无法发送通知");
             }

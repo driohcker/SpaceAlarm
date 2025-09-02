@@ -2,6 +2,7 @@ package com.example.spacealarm.controller;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -201,19 +202,25 @@ public class MapController {
         baiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+                // 检查ExtraInfo是否为null
+                Bundle extraInfo = marker.getExtraInfo();
+                if (extraInfo == null) {
+                    return false; // 如果ExtraInfo为null，直接返回false
+                }
+                
                 // 检查是否是闹钟标记
-                Alarm alarm = (Alarm) marker.getExtraInfo().getSerializable("alarm");
+                Alarm alarm = (Alarm) extraInfo.getSerializable("alarm");
                 if (alarm != null && listener != null) {
                     listener.onMarkerClick(alarm);
                     return true;
                 }
                 
                 // 检查是否是POI标记
-                String poiName = marker.getExtraInfo().getString("poi_name");
+                String poiName = extraInfo.getString("poi_name");
                 if (poiName != null && listener != null) {
-                    double latitude = marker.getExtraInfo().getDouble("poi_latitude");
-                    double longitude = marker.getExtraInfo().getDouble("poi_longitude");
-                    String address = marker.getExtraInfo().getString("poi_address");
+                    double latitude = extraInfo.getDouble("poi_latitude");
+                    double longitude = extraInfo.getDouble("poi_longitude");
+                    String address = extraInfo.getString("poi_address");
                     LatLng latLng = new LatLng(latitude, longitude);
                     listener.onPoiMarkerClick(latLng, poiName, address);
                     return true;

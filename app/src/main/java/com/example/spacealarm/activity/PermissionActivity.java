@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.spacealarm.AppApplication;
 import com.example.spacealarm.R;
+import com.example.spacealarm.service.TextToSpeechManager;
 import com.example.spacealarm.service.manager.BaiduMapManager;
 import com.example.spacealarm.service.manager.PermissionManager;
 
@@ -75,12 +76,21 @@ public class PermissionActivity extends AppCompatActivity {
             Log.d(TAG, "所有权限已授权，直接进入主界面");
             // 这里假设用户已经同意过协议，直接初始化SDK并进入主界面
             initializeBaiduMapSDK();
+            initTTS();
             startMainActivity();
         }
     }
 
     private void requestAllPermissions() {
         PermissionManager.requestLocationPermissions(this);
+    }
+
+    private void initTTS(){
+        try {
+            TextToSpeechManager textToSpeechManager = TextToSpeechManager.getInstance(getApplicationContext());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void initializeBaiduMapSDK() {

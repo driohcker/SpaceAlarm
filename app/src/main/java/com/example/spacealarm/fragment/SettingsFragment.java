@@ -24,6 +24,8 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
     private SwitchMaterial editVibrationEnabled;
     private SwitchMaterial editSoundEnabled;
     private SwitchMaterial editBackgroundServiceEnabled;
+    // 新增：语音朗读开关
+    private SwitchMaterial editTextToSpeechEnabled;
     private SettingsController settingsController;
     
     private Context mContext;
@@ -46,6 +48,8 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
         editVibrationEnabled = view.findViewById(R.id.editVibrationEnabled);
         editSoundEnabled = view.findViewById(R.id.editSoundEnabled);
         editBackgroundServiceEnabled = view.findViewById(R.id.editBackgroundServiceEnabled);
+        // 新增：初始化语音朗读开关
+        editTextToSpeechEnabled = view.findViewById(R.id.editTextToSpeechEnabled);
 
         // 加载设置
         loadSettings();
@@ -61,6 +65,8 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
         editVibrationEnabled.setChecked(settingsController.isVibrationEnabled());
         editSoundEnabled.setChecked(settingsController.isSoundEnabled());
         editBackgroundServiceEnabled.setChecked(settingsController.isBackgroundServiceEnabled());
+        // 新增：加载语音朗读设置
+        editTextToSpeechEnabled.setChecked(settingsController.isTextToSpeechEnabled());
     }
 
     private void setupSwitchListeners() {
@@ -102,6 +108,13 @@ public class SettingsFragment extends Fragment implements SettingsController.Set
                     // 停止服务
                     mContext.stopService(serviceIntent);
                 }
+            }
+        });
+        // 新增：语音朗读开关监听器
+        editTextToSpeechEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settingsController.setTextToSpeechEnabled(isChecked);
             }
         });
     }
