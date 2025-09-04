@@ -49,6 +49,19 @@ public class PermissionActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        /**
+         * 设置勾选框点击事件
+         * @author blgnni
+         */
+        baiduAgreementCheckbox.setOnClickListener(v -> {
+            if (baiduAgreementCheckbox.isChecked()) {
+                // 设置按钮为激活状态（颜色变深）
+                authorizeButton.setBackgroundResource(R.drawable.rounded_background_blue_active);
+            } else {
+                // 恢复未激活状态
+                authorizeButton.setBackgroundResource(R.drawable.rounded_background_blue);
+            }
+        });
 
         // 设置按钮点击事件
         authorizeButton.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +133,9 @@ public class PermissionActivity extends AppCompatActivity {
             Log.d(TAG, "部分或全部权限未授权");
             // 提示用户缺少的权限，并再次请求
             Toast.makeText(this, "请授权所有必要权限以使用应用功能", Toast.LENGTH_LONG).show();
-            requestAllPermissions();
+
+            //这一段是不必要的，只需要提醒用户就会好了，不然我会觉得你一直提醒的很烦
+            //requestAllPermissions();
         }
     }
 

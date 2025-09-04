@@ -20,6 +20,11 @@ public class PermissionManager {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    /**
+     * 检查用户是否授权
+     * @param activity 授权页面
+     * @return 布尔
+     */
     public static boolean checkLocationPermissions(Activity activity) {
         for (String permission : LOCATION_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(activity, permission)
