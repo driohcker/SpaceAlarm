@@ -41,7 +41,7 @@ public class BaiduLocationService {
         this.appContext = context.getApplicationContext();
         this.alarmService = new AlarmService(appContext);
         // 修改初始化
-        this.notificationService = new NotificationService(appContext);
+        this.notificationService = NotificationService.getInstance(appContext);
         initLocationClient();
     }
 
@@ -135,7 +135,7 @@ public class BaiduLocationService {
     private void checkAlarmTrigger(double latitude, double longitude) {
         Alarm triggeredAlarm = alarmService.checkAllAlarms(latitude, longitude);
         if (triggeredAlarm != null) {
-            Log.d(TAG, "Alarm triggered: " + triggeredAlarm.getTitle());
+            Log.d(TAG, "检测到闹钟触发：" + triggeredAlarm.getTitle());
             // 修改通知调用
             notificationService.showAlarmNotification(triggeredAlarm);
             // 通知所有闹钟触发监听器

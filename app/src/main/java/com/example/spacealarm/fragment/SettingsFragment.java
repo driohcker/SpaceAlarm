@@ -17,6 +17,7 @@ import com.example.spacealarm.service.ForegroundLocationService;
 
 import com.example.spacealarm.R;
 import com.example.spacealarm.controller.SettingsController;
+import com.example.spacealarm.service.NotificationService;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingsFragment extends Fragment implements SettingsController.SettingsViewCallback {

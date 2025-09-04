@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.spacealarm.service.NotificationService;
+
 public class SettingsController {
     private static final String TAG = "SettingsController";
     private static final String PREF_NAME = "SpaceAlarmSettings";

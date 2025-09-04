@@ -54,7 +54,7 @@ public class ForegroundLocationService extends Service {
     private final AlarmTriggerListener alarmTriggerListener = new AlarmTriggerListener() {
         @Override
         public void onAlarmTriggered(Alarm alarm, double latitude, double longitude) {
-            Log.d(TAG, "闹钟触发: " + alarm.getTitle());
+            //Log.d(TAG, "闹钟触发: " + alarm.getTitle());
             // 此处已由BaiduLocationService处理通知
         }
     };
@@ -166,7 +166,7 @@ public class ForegroundLocationService extends Service {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "空间闹钟前台服务",
-                    NotificationManager.IMPORTANCE_HIGH  // 提高重要性级别，确保通知能正常显示操作按钮
+                    NotificationManager.IMPORTANCE_LOW  // 提高重要性级别，确保通知能正常显示操作按钮
             );
             channel.setDescription("用于后台持续定位和闹钟检测");
             channel.setShowBadge(true);  // 显示角标
@@ -214,7 +214,8 @@ public class ForegroundLocationService extends Service {
         NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
         bigTextStyle.bigText(content + "\n（此通知未关闭即为后台服务进行中）");
         builder.setStyle(bigTextStyle);
-        
+        builder.setSound(null);
+
         // 添加关闭应用按钮
         builder.addAction(R.drawable.ic_close, "关闭应用", closeAppPendingIntent);
         

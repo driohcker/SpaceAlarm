@@ -18,7 +18,7 @@ public class AlarmService {
     private final Context context;
     
     // 两次触发之间的最小间隔（毫秒），设置为5分钟
-    public static final long MIN_ALARM_INTERVAL = 5 * 60 * 1000; // 5分钟
+    public static final long MIN_ALARM_INTERVAL = 5 * 1 * 1000; // 5分钟
     
     // 移除：内存中的触发时间存储，改用持久化存储
     // private final Map<Integer, Long> lastAlarmTriggerTimes = new HashMap<>();
@@ -104,7 +104,7 @@ public class AlarmService {
 
         for (Alarm alarm : enabledAlarms) {
             if (isInAlarmRange(alarm, currentLatitude, currentLongitude) && shouldTriggerAlarm(alarm)) {
-                Log.d(TAG, "Alarm triggered: " + alarm.getTitle());
+                Log.d(TAG, "触发闹钟: " + alarm.getTitle());
                 updateLastTriggerTime(alarm);
                 return alarm;
             }
