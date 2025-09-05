@@ -17,7 +17,6 @@ public class PermissionManager {
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.CHANGE_WIFI_STATE,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
     /**
