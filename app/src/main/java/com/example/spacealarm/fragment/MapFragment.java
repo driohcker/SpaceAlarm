@@ -313,9 +313,10 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
     // 处理POI搜索结果
     public void showPoiSearchResults(PoiResult poiResult) {
         if (mapController != null && poiResult != null) {
-            // 清除地图上的现有标记
-            mapController.clearAllPoiMarkers();
-
+            //清除地图上的现有标记
+            mapController.clearAllPoiMarkers();//实质上只清除了上次poi信息
+            //重新显示闹钟
+            mapController.loadAlarms();
             // 获取POI列表
             List<PoiInfo> poiList = poiResult.getAllPoi();
             if (poiList != null && !poiList.isEmpty()) {

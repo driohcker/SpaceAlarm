@@ -18,8 +18,10 @@ import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.CircleOptions;
+import com.baidu.mapapi.map.Overlay;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
+import com.baidu.mapapi.map.TitleOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.model.LatLngBounds;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -53,7 +55,7 @@ public class MapController {
     private final BaiduLocationService locationService;
 
     private final List<Marker> alarmMarkers = new ArrayList<>();
-    private final List<Marker> poiMarkers = new ArrayList<>();
+    private final List<Overlay> poiMarkers = new ArrayList<>();
 
     private OnMapInteractionListener listener;
     private GeoCoder geoCoder;
@@ -75,7 +77,7 @@ public class MapController {
             // 处理定位错误
         }
     };
-
+    //类里面又加了个接口
     public interface OnMapInteractionListener {
         void onMapClick(LatLng latLng, String address);
         void onMarkerClick(Alarm alarm);
@@ -266,11 +268,12 @@ public class MapController {
         // 3. 释放原始资源以避免内存泄漏
         originalDescriptor.recycle();
 
+        TitleOptions titleOptions = new TitleOptions().text(alarm.getTitle());
         // 创建标记选项
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(location)
                 .icon(bitmapDescriptor)
-                .title(alarm.getTitle())
+                .titleOptions(titleOptions)
                 .draggable(false);
 
         // 添加标记到地图
@@ -286,7 +289,7 @@ public class MapController {
         // 添加圆形范围
         showCircleOverlay(location, alarm.getRadius());
         // 添加标题
-        showTextOverlay(location, alarm.getTitle());
+//        showTextOverlay(location, alarm.getTitle());
     }
 
     // 在闹钟标记周围添加范围显示
@@ -331,7 +334,7 @@ public class MapController {
 
         // 重新加载所有闹钟以刷新显示
         clearAllMarkers();
-        loadAlarms();
+        loadAlarms();//里面又调用一次 clearAllMarkers();
     }
 
     // 更新所有闹钟标记
@@ -373,16 +376,19 @@ public class MapController {
         
         // 3. 释放原始资源以避免内存泄漏
         originalDescriptor.recycle();
-    
+
+        //为Marker添加title而创建的对象
+        TitleOptions titleOptions = new TitleOptions().text(poi.name);
+
         // 创建标记选项
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(location)
                 .icon(bitmapDescriptor)
-                .title(poi.name)
-                .draggable(false);
+                .titleOptions(titleOptions)
+                .draggable(false);//removeOverlay之前，设置为ture，标记和title可以拖动：remove之后，标记消失，title还在，不能拖动title
     
         // 添加标记到地图
-        Marker marker = (Marker) baiduMap.addOverlay(markerOptions);
+        Overlay marker =  baiduMap.addOverlay(markerOptions);
     
         // 保存POI信息到标记 - 改为存储单独的属性而非整个对象
         android.os.Bundle bundle = new android.os.Bundle();
@@ -392,11 +398,11 @@ public class MapController {
         bundle.putString("poi_address", poi.address);
         bundle.putString("poi_uid", poi.uid);
         marker.setExtraInfo(bundle);
-    
+
         poiMarkers.add(marker);
     
         // 添加标题
-        showTextOverlay(location, poi.name);
+//        showTextOverlay(location, poi.name);
     }
 
     // 缩放地图以显示所有POI
@@ -430,10 +436,8 @@ public class MapController {
 
     // 清除所有POI标记
     public void clearAllPoiMarkers() {
-        for (Marker marker : poiMarkers) {
-            marker.remove();
-        }
-        poiMarkers.clear();
+        baiduMap.removeOverLays(poiMarkers);//没啥用，将标记设置为可拖动，remove之前标记和title可拖动，remove之后，剩下一个title拖不动
+        poiMarkers.clear();//清除上一次poi信息
     }
 
     // 更新clearAllMarkers方法以同时清除POI标记

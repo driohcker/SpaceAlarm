@@ -82,7 +82,8 @@ public class BaiduLocationService {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
         option.setCoorType("bd09ll"); // 百度坐标系
-        option.setScanSpan(5000); // 5秒扫描一次
+//        option.setScanSpan(5000); // 5秒扫描一次
+        option.setScanSpan(1000*60);//1 min
         option.setIsNeedAddress(true); // 需要地址信息
         option.setIsNeedLocationDescribe(true); // 需要位置描述
         option.setOpenGps(true); // 打开GPS
