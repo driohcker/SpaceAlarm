@@ -126,14 +126,14 @@ public class MapController {
                 
                 // 创建临时标记图标 - 修改这部分代码以固定图标大小
                 // 1. 首先获取原始图标
-                BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_add_32);
+                BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_add_32_2);
                 
                 // 2. 创建一个固定大小的图标
                 // 这里设置宽高为60px，可以根据需要调整
                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                         Bitmap.createScaledBitmap(
                                 originalDescriptor.getBitmap(), 
-                                60, 60, // 设置固定的宽度和高度
+                                100, 100, // 设置固定的宽度和高度
                                 true // 是否使用滤波
                         )
                 );
@@ -253,14 +253,14 @@ public class MapController {
 
         // 创建标记图标 - 修改这部分代码以固定图标大小
         // 1. 首先获取原始图标
-        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_alarm_marker_32);
+        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_alarm_marker_32_2);
         
         // 2. 创建一个固定大小的图标
         // 这里设置宽高为60px，可以根据需要调整
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                 Bitmap.createScaledBitmap(
                         originalDescriptor.getBitmap(), 
-                        60, 60, // 设置固定的宽度和高度
+                        100, 100, // 设置固定的宽度和高度
                         true // 是否使用滤波
                 )
         );
@@ -362,14 +362,14 @@ public class MapController {
     
         // 创建POI标记图标 - 修改这部分代码以固定图标大小
         // 1. 首先获取原始图标
-        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_poi_marker);
+        BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_poi_marker_2);
         
         // 2. 创建一个固定大小的图标
         // 这里设置宽高为50px，可以根据需要调整
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                 Bitmap.createScaledBitmap(
                         originalDescriptor.getBitmap(), 
-                        50, 50, // 设置固定的宽度和高度
+                        100, 100, // 设置固定的宽度和高度
                         true // 是否使用滤波
                 )
         );

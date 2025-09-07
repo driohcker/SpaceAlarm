@@ -31,6 +31,12 @@ public class Alarm implements Serializable {
         this.radius = radius;
     }
 
+    public Alarm(double latitude, double longitude) {
+        this();
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     // Getters and Setters
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }

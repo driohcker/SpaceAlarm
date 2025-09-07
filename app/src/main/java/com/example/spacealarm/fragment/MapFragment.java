@@ -89,7 +89,10 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
                 }
                 
                 // 显示添加闹钟对话框
-                showAddAlarmDialog(clickedPosition);
+                // showAddAlarmDialog(clickedPosition);
+
+                Alarm newAlarm = new Alarm(clickedPosition.latitude,clickedPosition.longitude);
+                addNewAlarmDialog(newAlarm);
             }
         });
 
@@ -143,75 +146,75 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         }
     }
 
-    // 显示添加闹钟对话框
-    private void showAddAlarmDialog(final LatLng position) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_alarm, null);
-        builder.setView(dialogView);
-        
-        // 初始化对话框控件
-        EditText editAlarmName = dialogView.findViewById(R.id.editAlarmName);
-        Slider editAlarmRadius = dialogView.findViewById(R.id.editAlarmRadius);
-        TextView radiusValue = dialogView.findViewById(R.id.radiusValue);
-        SwitchMaterial switchVibration = dialogView.findViewById(R.id.switchVibration);
-        SwitchMaterial switchSound = dialogView.findViewById(R.id.switchSound);
-        
-        // 更新半径显示
-        radiusValue.setText((int)editAlarmRadius.getValue() + "米");
-        editAlarmRadius.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(Slider slider, float value, boolean fromUser) {
-                radiusValue.setText((int)value + "米");
-            }
-        });
-        
-        builder.setTitle("添加空间闹钟")
-            .setPositiveButton("保存", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // 获取输入值
-                    String title = editAlarmName.getText().toString().trim();
-                    float radius = editAlarmRadius.getValue();
-                    boolean isVibrate = switchVibration.isChecked();
-                    boolean isRing = switchSound.isChecked();
-                    
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "请输入闹钟名称", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    
-                    // 创建闹钟，使用获取到的地址
-                    AlarmService alarmService = new AlarmService(getContext());
-                    long alarmId = alarmService.createAlarmWithDetails(
-                        title,
-                        position.latitude,
-                        position.longitude,
-                        radius,
-                        lastClickedAddress, // 使用存储的地址
-                        "", // 可以添加默认消息
-                        isVibrate,
-                        isRing
-                    );
-                    
-                    if (alarmId > 0) {
-                        Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
-                        // 刷新地图标记
-                        mapController.loadAlarms();
-                    } else {
-                        Toast.makeText(getContext(), "闹钟添加失败", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            })
-            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-        
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+//    // 显示添加闹钟对话框
+//    private void showAddAlarmDialog(final LatLng position) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        LayoutInflater inflater = requireActivity().getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.dialog_add_alarm, null);
+//        builder.setView(dialogView);
+//
+//        // 初始化对话框控件
+//        EditText editAlarmName = dialogView.findViewById(R.id.editAlarmName);
+//        Slider editAlarmRadius = dialogView.findViewById(R.id.editAlarmRadius);
+//        TextView radiusValue = dialogView.findViewById(R.id.radiusValue);
+//        SwitchMaterial switchVibration = dialogView.findViewById(R.id.switchVibration);
+//        SwitchMaterial switchSound = dialogView.findViewById(R.id.switchSound);
+//
+//        // 更新半径显示
+//        radiusValue.setText((int)editAlarmRadius.getValue() + "米");
+//        editAlarmRadius.addOnChangeListener(new Slider.OnChangeListener() {
+//            @Override
+//            public void onValueChange(Slider slider, float value, boolean fromUser) {
+//                radiusValue.setText((int)value + "米");
+//            }
+//        });
+//
+//        builder.setTitle("添加空间闹钟")
+//            .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // 获取输入值
+//                    String title = editAlarmName.getText().toString().trim();
+//                    float radius = editAlarmRadius.getValue();
+//                    boolean isVibrate = switchVibration.isChecked();
+//                    boolean isRing = switchSound.isChecked();
+//
+//                    if (title.isEmpty()) {
+//                        Toast.makeText(getContext(), "请输入闹钟名称", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//
+//                    // 创建闹钟，使用获取到的地址
+//                    AlarmService alarmService = new AlarmService(getContext());
+//                    long alarmId = alarmService.createAlarmWithDetails(
+//                        title,
+//                        position.latitude,
+//                        position.longitude,
+//                        radius,
+//                        lastClickedAddress, // 使用存储的地址
+//                        "", // 可以添加默认消息
+//                        isVibrate,
+//                        isRing
+//                    );
+//
+//                    if (alarmId > 0) {
+//                        Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
+//                        // 刷新地图标记
+//                        mapController.loadAlarms();
+//                    } else {
+//                        Toast.makeText(getContext(), "闹钟添加失败", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            })
+//            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    dialog.dismiss();
+//                }
+//            });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//    }
 
     // 显示编辑闹钟对话框
     private void showEditAlarmDialog(final Alarm alarm) {
@@ -315,6 +318,8 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         if (mapController != null && poiResult != null) {
             //清除地图上的现有标记
             mapController.clearAllPoiMarkers();//实质上只清除了上次poi信息
+            //清除上次点击信息
+            lastClickedAddress=null;
             //重新显示闹钟
             mapController.loadAlarms();
             // 获取POI列表
@@ -333,83 +338,83 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         }
     }
 
-    // 显示添加闹钟对话框（带POI信息）
-    private void showAddAlarmDialogWithPoi(final LatLng position, final String poiName, final String address) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_add_alarm, null);
-        builder.setView(dialogView);
-        
-        // 初始化对话框控件
-        EditText editAlarmName = dialogView.findViewById(R.id.editAlarmName);
-        Slider editAlarmRadius = dialogView.findViewById(R.id.editAlarmRadius);
-        TextView radiusValue = dialogView.findViewById(R.id.radiusValue);
-        SwitchMaterial switchVibration = dialogView.findViewById(R.id.switchVibration);
-        SwitchMaterial switchSound = dialogView.findViewById(R.id.switchSound);
-        
-        // 自动填充POI名称
-        editAlarmName.setText(poiName);
-        
-        // 更新半径显示
-        radiusValue.setText((int)editAlarmRadius.getValue() + "米");
-        editAlarmRadius.addOnChangeListener(new Slider.OnChangeListener() {
-            @Override
-            public void onValueChange(Slider slider, float value, boolean fromUser) {
-                radiusValue.setText((int)value + "米");
-            }
-        });
-        
-        builder.setTitle("添加空间闹钟")
-            .setPositiveButton("保存", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // 获取输入值
-                    String title = editAlarmName.getText().toString().trim();
-                    float radius = editAlarmRadius.getValue();
-                    boolean isVibrate = switchVibration.isChecked();
-                    boolean isRing = switchSound.isChecked();
-                    
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "请输入闹钟名称", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    
-                    // 创建闹钟
-                    AlarmService alarmService = new AlarmService(getContext());
-                    long alarmId = alarmService.createAlarmWithDetails(
-                        title,
-                        position.latitude,
-                        position.longitude,
-                        radius,
-                        address,
-                        "", // 可以添加默认消息
-                        isVibrate,
-                        isRing
-                    );
-                    
-                    if (alarmId > 0) {
-                        Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
-                        // 刷新地图标记
-                        mapController.loadAlarms();
-                    } else {
-                        Toast.makeText(getContext(), "闹钟添加失败", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            })
-            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-        
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+//    // 显示添加闹钟对话框（带POI信息）
+//    private void showAddAlarmDialogWithPoi(final LatLng position, final String poiName, final String address) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        LayoutInflater inflater = requireActivity().getLayoutInflater();
+//        View dialogView = inflater.inflate(R.layout.dialog_add_alarm, null);
+//        builder.setView(dialogView);
+//
+//        // 初始化对话框控件
+//        EditText editAlarmName = dialogView.findViewById(R.id.editAlarmName);
+//        Slider editAlarmRadius = dialogView.findViewById(R.id.editAlarmRadius);
+//        TextView radiusValue = dialogView.findViewById(R.id.radiusValue);
+//        SwitchMaterial switchVibration = dialogView.findViewById(R.id.switchVibration);
+//        SwitchMaterial switchSound = dialogView.findViewById(R.id.switchSound);
+//
+//        // 自动填充POI名称
+//        editAlarmName.setText(poiName);
+//
+//        // 更新半径显示
+//        radiusValue.setText((int)editAlarmRadius.getValue() + "米");
+//        editAlarmRadius.addOnChangeListener(new Slider.OnChangeListener() {
+//            @Override
+//            public void onValueChange(Slider slider, float value, boolean fromUser) {
+//                radiusValue.setText((int)value + "米");
+//            }
+//        });
+//
+//        builder.setTitle("添加空间闹钟")
+//            .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int id) {
+//                    // 获取输入值
+//                    String title = editAlarmName.getText().toString().trim();
+//                    float radius = editAlarmRadius.getValue();
+//                    boolean isVibrate = switchVibration.isChecked();
+//                    boolean isRing = switchSound.isChecked();
+//
+//                    if (title.isEmpty()) {
+//                        Toast.makeText(getContext(), "请输入闹钟名称", Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//
+//                    // 创建闹钟
+//                    AlarmService alarmService = new AlarmService(getContext());
+//                    long alarmId = alarmService.createAlarmWithDetails(
+//                        title,
+//                        position.latitude,
+//                        position.longitude,
+//                        radius,
+//                        address,
+//                        "", // 可以添加默认消息
+//                        isVibrate,
+//                        isRing
+//                    );
+//
+//                    if (alarmId > 0) {
+//                        Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
+//                        // 刷新地图标记
+//                        mapController.loadAlarms();
+//                    } else {
+//                        Toast.makeText(getContext(), "闹钟添加失败", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            })
+//            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    dialog.dismiss();
+//                }
+//            });
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//    }
 
     @Override
     public void onMapClick(LatLng latLng, String address) {
         // 存储获取到的地址
-        this.lastClickedAddress = address != null ? address : "未知地址";
+        this.lastClickedAddress = address != null ? address : "未知地址";//没用到latlng
     }
 
     @Override
@@ -420,11 +425,100 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
     // 实现新增的POI标记点击方法
     @Override
     public void onPoiMarkerClick(LatLng latLng, String name, String address) {
-        showAddAlarmDialogWithPoi(latLng, name, address);
+//        showAddAlarmDialogWithPoi(latLng, name, address);
+
+        Alarm newPoiAlarm = new Alarm();
+        newPoiAlarm.setLatitude(latLng.latitude);
+        newPoiAlarm.setLongitude(latLng.longitude);
+        newPoiAlarm.setTitle(name);
+        newPoiAlarm.setAddress(address);
+
+        addNewAlarmDialog(newPoiAlarm);
     }
 
     @Override
     public void onLocationUpdate(LatLng currentLocation) {
 
+    }
+
+
+    /**
+     * 显示添加闹钟对话框 点击添加闹钟或者根据poi信息添加闹钟 二合一的方法
+     * @author blgnni
+     * @param  alarm 闹钟信息
+     */
+    private void addNewAlarmDialog(Alarm alarm) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_alarm, null);
+        builder.setView(dialogView);
+
+        // 初始化对话框控件
+        EditText editAlarmName = dialogView.findViewById(R.id.editAlarmName);
+        Slider editAlarmRadius = dialogView.findViewById(R.id.editAlarmRadius);
+        TextView radiusValue = dialogView.findViewById(R.id.radiusValue);
+        SwitchMaterial switchVibration = dialogView.findViewById(R.id.switchVibration);
+        SwitchMaterial switchSound = dialogView.findViewById(R.id.switchSound);
+
+        // 更新半径显示
+        radiusValue.setText((int)editAlarmRadius.getValue() + "米");
+        editAlarmRadius.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(Slider slider, float value, boolean fromUser) {
+                radiusValue.setText((int)value + "米");
+            }
+        });
+
+        if(alarm.getTitle()==null){
+            String title = editAlarmName.getText().toString().trim();
+            alarm.setTitle(title);
+        }else{
+            editAlarmName.setText(alarm.getTitle());
+        }
+        builder.setTitle("添加空间闹钟")
+                .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //设置闹钟参数信息
+                        String title = alarm.getTitle();
+                        float radius = editAlarmRadius.getValue();
+                        boolean isVibrate = switchVibration.isChecked();
+                        boolean isRing = switchSound.isChecked();
+
+                        if (title.isEmpty()) {
+                            Toast.makeText(getContext(), "闹钟名称不能为空", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // 创建闹钟，使用获取到的地址
+                        AlarmService alarmService = new AlarmService(getContext());
+                        long alarmId = alarmService.createAlarmWithDetails(
+                                title,
+                                alarm.getLatitude(),
+                                alarm.getLongitude(),
+                                radius,
+                                alarm.getAddress(),
+                                "", // 可以添加默认消息
+                                isVibrate,
+                                isRing
+                        );
+
+                        if (alarmId > 0) {
+                            Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
+                            // 刷新地图标记
+                            mapController.loadAlarms();
+                        } else {
+                            Toast.makeText(getContext(), "闹钟添加失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
