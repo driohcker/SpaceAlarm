@@ -44,10 +44,10 @@ public class BaiduMapManager {
         baiduMap.animateMapStatus(mapStatusUpdate);
     }
 
-    public static void updateMyLocation(BaiduMap baiduMap, double latitude, double longitude, float accuracy) {
+    public static void updateMyLocation(BaiduMap baiduMap, double latitude, double longitude, float accuracy, float direction) {
         MyLocationData locData = new MyLocationData.Builder()
                 .accuracy(accuracy)
-                .direction(0)
+                .direction(direction)
                 .latitude(latitude)
                 .longitude(longitude)
                 .build();

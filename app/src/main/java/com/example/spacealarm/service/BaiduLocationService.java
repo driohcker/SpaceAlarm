@@ -111,12 +111,17 @@ public class BaiduLocationService {
                     double latitude = bdLocation.getLatitude();
                     double longitude = bdLocation.getLongitude();
                     float accuracy = bdLocation.getRadius();
+                    float direction_num = bdLocation.getDirection();
+                    String direction_text = convertDirectionToText(direction_num);
                     String address = bdLocation.getAddrStr(); // 获取地址信息
+
                     if (address == null || address.isEmpty()) {
                         address = "未知位置";
                     }
 
-                    Log.d(TAG, "Location received: " + latitude + ", " + longitude + ", accuracy: " + accuracy + ", address: " + address);
+
+
+                    Log.d(TAG, "接收位置信息: \n" + latitude + ", " + longitude + "\n精度: " + accuracy + "\n地址: " + address + "\n方向: " + direction_text + "(" + direction_num + "°)" + "\n ");
 
                     // 通知所有位置监听器
                     notifyLocationChanged(latitude, longitude, accuracy, address);
@@ -251,5 +256,37 @@ public class BaiduLocationService {
             return location.getCity();
         }
         return null;
+    }
+
+    /**
+     * 将浮点数方向转换为东南西北文字
+     * @param direction 方向角度（0-360度）
+     * @return 方向文字描述
+     */
+    private String convertDirectionToText(float direction) {
+        if (direction < 0 || direction >= 360) {
+            return "未获取到方向";
+        }
+        
+        // 将方向分为8个区间：北、东北、东、东南、南、西南、西、西北
+        if (direction >= 337.5 || direction < 22.5) {
+            return "北";
+        } else if (direction >= 22.5 && direction < 67.5) {
+            return "东北";
+        } else if (direction >= 67.5 && direction < 112.5) {
+            return "东";
+        } else if (direction >= 112.5 && direction < 157.5) {
+            return "东南";
+        } else if (direction >= 157.5 && direction < 202.5) {
+            return "南";
+        } else if (direction >= 202.5 && direction < 247.5) {
+            return "西南";
+        } else if (direction >= 247.5 && direction < 292.5) {
+            return "西";
+        } else if (direction >= 292.5 && direction < 337.5) {
+            return "西北";
+        } else {
+            return "未获取到方向";
+        }
     }
 }

@@ -38,7 +38,7 @@ public class ForegroundLocationService extends Service {
     private final LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(double latitude, double longitude, float accuracy, String address) {
-            Log.d(TAG, "位置更新: " + latitude + ", " + longitude + ", 地址: " + address);
+            Log.d(TAG, "位置更新: \n" + latitude + ", " + longitude + "\n地址: " + address + "\n ");
             // 更新前台通知内容，使用地址信息
             updateNotification("当前位置: " + address);
         }

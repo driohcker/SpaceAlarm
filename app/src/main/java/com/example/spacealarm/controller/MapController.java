@@ -289,7 +289,7 @@ public class MapController {
         // 添加圆形范围
         showCircleOverlay(location, alarm.getRadius());
         // 添加标题
-//        showTextOverlay(location, alarm.getTitle());
+        // showTextOverlay(location, alarm.getTitle());
     }
 
     // 在闹钟标记周围添加范围显示
@@ -303,7 +303,7 @@ public class MapController {
         baiduMap.addOverlay(circleOptions);
     }
 
-    // 在闹钟标记下添加title字段
+    // 在闹钟标记下添加title字段（已废弃）
     private void showTextOverlay(LatLng center, String title){
         // 在标记下方添加文本覆盖物显示标题
         // 计算文本位置（在标记下方约30像素处）
@@ -535,7 +535,7 @@ public class MapController {
                     .latitude(latitude)
                     .longitude(longitude)
                     .accuracy(accuracy)
-                    .direction(0)
+                    .direction(lastLocation.getDirection())
                     .build();
             baiduMap.setMyLocationData(locationData);
         } else {
@@ -565,9 +565,11 @@ public class MapController {
                     .latitude(latitude)
                     .longitude(longitude)
                     .accuracy(accuracy)
-                    .direction(0)
+                    .direction(lastLocation.getDirection())
                     .build();
             baiduMap.setMyLocationData(locationData);
+
+            Log.d(TAG, "已更新用户位置");
         } else {
             // 如果没有最后已知位置，则请求一次定位更新
             locationService.requestLocation();
