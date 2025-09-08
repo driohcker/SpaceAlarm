@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -41,6 +42,9 @@ import java.util.List;
 import com.example.spacealarm.service.ForegroundLocationService;
 import com.example.spacealarm.service.BaiduLocationService;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 public class CustomToolbarManager {
     private static Toolbar toolbar;
     private static View titleLayout;
@@ -52,6 +56,7 @@ public class CustomToolbarManager {
     private static PopupWindow searchHistoryPopup;
     private static SearchHistoryAdapter searchHistoryAdapter;
     private static ImageView closeAppButton;
+
 
     // 初始化Toolbar管理器
     public static void setup(Activity activity) {
@@ -121,6 +126,33 @@ public class CustomToolbarManager {
         ImageView historyButton = activity.findViewById(R.id.history_button);
         if (historyButton != null) {
             historyButton.setOnClickListener(v -> showSearchHistory(activity));
+        }
+
+        // 初始化清除按钮
+        ImageView clearButton = activity.findViewById(R.id.clear_button);
+        if (clearButton != null) {
+            clearButton.setOnClickListener(v -> {
+                searchEditText.setText("");
+                clearButton.setVisibility(View.GONE);
+            });
+            
+            // 添加文本变化监听器
+            searchEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                
+                @Override
+                public void afterTextChanged(Editable s) {
+                    if (s.length() > 0) {
+                        clearButton.setVisibility(View.VISIBLE);
+                    } else {
+                        clearButton.setVisibility(View.GONE);
+                    }
+                }
+            });
         }
     }
 

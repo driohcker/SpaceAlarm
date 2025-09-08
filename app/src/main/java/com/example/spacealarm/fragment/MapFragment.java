@@ -122,6 +122,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         }
         // 检查定位权限
         checkLocationPermission();
+
     }
 
     @Override
