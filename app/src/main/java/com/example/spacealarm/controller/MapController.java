@@ -129,7 +129,7 @@ public class MapController {
                 BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_add_32_2);
                 
                 // 2. 创建一个固定大小的图标
-                // 这里设置宽高为60px，可以根据需要调整
+                // 这里设置宽高为100px，可以根据需要调整
                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                         Bitmap.createScaledBitmap(
                                 originalDescriptor.getBitmap(), 

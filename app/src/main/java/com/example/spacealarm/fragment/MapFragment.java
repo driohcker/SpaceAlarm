@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +93,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
                 // showAddAlarmDialog(clickedPosition);
 
                 Alarm newAlarm = new Alarm(clickedPosition.latitude,clickedPosition.longitude);
+                newAlarm.setAddress(lastClickedAddress);
                 addNewAlarmDialog(newAlarm);
             }
         });
@@ -431,7 +433,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         newPoiAlarm.setLatitude(latLng.latitude);
         newPoiAlarm.setLongitude(latLng.longitude);
         newPoiAlarm.setTitle(name);
-        newPoiAlarm.setAddress(address);
+        newPoiAlarm.setAddress(address);//这里设置了地址，记得在其他地方也要
 
         addNewAlarmDialog(newPoiAlarm);
     }
@@ -505,6 +507,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
                         if (alarmId > 0) {
                             Toast.makeText(getContext(), "闹钟添加成功", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "新闹钟已填加: " + alarm.getTitle() + "\n范围: " + radius + "\n地址: " + alarm.getAddress() + "\n是否震动: " + isVibrate + "\n是否响铃: " + isRing);
                             // 刷新地图标记
                             mapController.loadAlarms();
                         } else {
