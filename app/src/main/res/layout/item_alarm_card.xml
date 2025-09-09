@@ -26,6 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginRight="10dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -33,7 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="公司打卡提醒"
-                    android:layout_marginBottom="3dp"
+                    android:layout_marginBottom="12dp"
                     android:textSize="16sp"
                     android:textColor="#333333"
                     android:textStyle="bold" />
@@ -67,16 +68,20 @@
 
                 <ImageView
                     android:id="@+id/locationIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:src="@drawable/ic_alarm_marker_32"
-                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/rounded_background_blue_2"
+                    android:padding="6dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginLeft="10dp"
                     android:contentDescription="定位到这个闹钟位置" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/alarmSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"
                     android:thumbTint="#FFFFFF"
                     app:trackTint="#E0E0E0"
                     app:thumbTint="#666666" />
