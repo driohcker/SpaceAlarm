@@ -146,6 +146,10 @@ public class BaiduLocationService {
             notificationService.showAlarmNotification(triggeredAlarm);
             // 通知所有闹钟触发监听器
             notifyAlarmTriggered(triggeredAlarm, latitude, longitude);
+            
+            // 闹钟响过一次后自动关闭
+            Log.d(TAG, "自动关闭闹钟：" + triggeredAlarm.getTitle());
+            alarmService.toggleAlarmEnabled(triggeredAlarm.getId());
         }
     }
 

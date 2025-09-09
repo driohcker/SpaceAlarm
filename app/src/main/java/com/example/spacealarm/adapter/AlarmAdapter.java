@@ -59,6 +59,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmTitle.setText(alarm.getTitle());
         holder.alarmAddress.setText(alarm.getAddress());
         holder.alarmRadius.setText(String.format("半径：%d米", (int) alarm.getRadius()));
+        
         // 先清除旧的监听器，防止ViewHolder复用导致的问题
         holder.alarmSwitch.setOnCheckedChangeListener(null);
         // 设置开关的初始状态
@@ -69,15 +70,30 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         });
 
         // 设置卡片点击事件
-        holder.itemView.setOnClickListener(v -> clickListener.onAlarmClick(alarm));
-
-        // 设置开关事件
-        holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            toggleListener.onAlarmToggle(alarm, isChecked);
+        holder.itemView.setOnClickListener(v -> {
+            // 添加点击动画效果
+            v.animate()
+              .scaleX(0.98f)
+              .scaleY(0.98f)
+              .setDuration(100)
+              .withEndAction(() -> {
+                  v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                  clickListener.onAlarmClick(alarm);
+              });
         });
 
         // 设置定位图标点击事件
-        holder.locationIcon.setOnClickListener(v -> locationIconClickListener.onLocationIconClick(alarm));
+        holder.locationIcon.setOnClickListener(v -> {
+            // 防止点击图标时触发卡片点击事件
+            v.animate()
+              .scaleX(0.9f)
+              .scaleY(0.9f)
+              .setDuration(100)
+              .withEndAction(() -> {
+                  v.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                  locationIconClickListener.onLocationIconClick(alarm);
+              });
+        });
     }
 
     @Override

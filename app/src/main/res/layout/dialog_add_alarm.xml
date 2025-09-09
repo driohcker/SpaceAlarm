@@ -15,14 +15,16 @@
         android:layout_height="wrap_content"
         android:hint="闹钟名称"
         app:boxBackgroundColor="@android:color/white"
-        app:boxStrokeColor="#757575"
-        app:hintTextColor="#757575">
+        app:boxStrokeColor="#4CAF50"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="#4CAF50">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editAlarmName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#212121"
+            android:textSize="16sp"
             android:text="我的闹钟" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -46,8 +48,8 @@
         android:valueTo="1000"
         android:stepSize="50"
         android:value="100"
-        app:thumbColor="#757575"
-        app:trackColorActive="#757575"
+        app:thumbColor="#4593E9"
+        app:trackColorActive="#4593E9"
         app:trackColorInactive="#E0E0E0" />
 
     <TextView
@@ -77,8 +79,7 @@
             android:id="@+id/switchVibration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:thumbTint="#757575"
-            android:trackTint="#BDBDBD"
+            android:thumbTint="#FFFFFF"
             android:checked="true" />
 
     </LinearLayout>
@@ -103,8 +104,7 @@
             android:id="@+id/switchSound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:thumbTint="#757575"
-            android:trackTint="#BDBDBD"
+            android:thumbTint="#FFFFFF"
             android:checked="true" />
 
     </LinearLayout>
