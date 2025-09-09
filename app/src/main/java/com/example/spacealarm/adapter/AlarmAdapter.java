@@ -59,7 +59,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
         holder.alarmTitle.setText(alarm.getTitle());
         holder.alarmAddress.setText(alarm.getAddress());
         holder.alarmRadius.setText(String.format("半径：%d米", (int) alarm.getRadius()));
+        // 先清除旧的监听器，防止ViewHolder复用导致的问题
+        holder.alarmSwitch.setOnCheckedChangeListener(null);
+        // 设置开关的初始状态
         holder.alarmSwitch.setChecked(alarm.isEnabled());
+        // 设置新的开关事件
+        holder.alarmSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            toggleListener.onAlarmToggle(alarm, isChecked);
+        });
 
         // 设置卡片点击事件
         holder.itemView.setOnClickListener(v -> clickListener.onAlarmClick(alarm));
