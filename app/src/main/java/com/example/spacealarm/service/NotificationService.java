@@ -57,7 +57,7 @@ public class NotificationService {
 
     // 获取单例实例
     public static synchronized NotificationService getInstance(Context context) {
-        if (instance == null) {
+        if (null == instance) {
             instance = new NotificationService(context);
         }
         return instance;
@@ -66,9 +66,9 @@ public class NotificationService {
     // 创建固定通知渠道
     private void createNotificationChannel() {
         Log.d(TAG, "创建通知渠道开始");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && null != notificationManager) {
             NotificationChannel existingChannel = notificationManager.getNotificationChannel(CHANNEL_ID);
-            if (existingChannel == null) {
+            if (null == existingChannel) {
                 NotificationChannel channel = new NotificationChannel(
                         CHANNEL_ID,
                         CHANNEL_NAME,
@@ -123,14 +123,14 @@ public class NotificationService {
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);
 
-            if (notificationManager != null) {
+            if (null != notificationManager) {
                 notificationManager.notify(notificationId, builder.build());
                 Log.d(TAG, "通知成功发送，ID: " + notificationId);
 
                 // 手动控制震动
                 if (shouldVibrate) {
                     Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                    if (vibrator != null) {
+                    if (null != vibrator) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             vibrator.vibrate(VibrationEffect.createWaveform(VIBRATION_PATTERN, -1));
                         } else {
@@ -146,7 +146,7 @@ public class NotificationService {
                 if (shouldRing) {
                     Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     activeRingtone = RingtoneManager.getRingtone(context, alarmSound);
-                    if (activeRingtone != null) {
+                    if (null != activeRingtone) {
                         activeRingtone.play();
                         Log.d(TAG, "铃声：ON");
                     }
@@ -173,7 +173,7 @@ public class NotificationService {
 
     // 停止当前铃声（可在需要时调用，比如关闭闹钟时）
     public void stopRingtone() {
-        if (activeRingtone != null && activeRingtone.isPlaying()) {
+        if (null != activeRingtone && activeRingtone.isPlaying()) {
             activeRingtone.stop();
             Log.d(TAG, "铃声已停止");
         }

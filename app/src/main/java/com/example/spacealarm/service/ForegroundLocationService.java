@@ -84,7 +84,7 @@ public class ForegroundLocationService extends Service {
         startForeground(NOTIFICATION_ID, createNotification("空间闹钟服务启动中..."));
 
         // 开始定位
-        if (locationService != null) {
+        if (null != locationService) {
             locationService.startLocation();
         }
     }
@@ -92,7 +92,7 @@ public class ForegroundLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 检查是否是关闭应用的意图
-        if (intent != null && ACTION_CLOSE_APP.equals(intent.getAction())) {
+        if (null != intent && ACTION_CLOSE_APP.equals(intent.getAction())) {
             Log.d(TAG, "收到关闭应用的请求");
             // 完全关闭应用
             forceCloseApp();
@@ -109,12 +109,12 @@ public class ForegroundLocationService extends Service {
         // 原有的初始化代码
         try {
             // 初始化定位服务
-            if (locationService == null) {
+            if (null == locationService) {
                 locationService = BaiduLocationService.getInstance(this);
             }
             
             // 确保定位服务在每次服务启动时都重新启动
-            if (locationService != null) {
+            if (null != locationService) {
                 locationService.restartLocation();
             }
             return START_STICKY; // 确保服务被杀死后能重启
@@ -137,7 +137,7 @@ public class ForegroundLocationService extends Service {
         Log.d(TAG, "后台服务销毁");
 
         // 移除监听器
-        if (locationService != null) {
+        if (null != locationService) {
             locationService.removeLocationListener(locationListener);
             locationService.removeAlarmTriggerListener(alarmTriggerListener);
             locationService.stopLocation();
@@ -231,7 +231,7 @@ public class ForegroundLocationService extends Service {
         Log.d(TAG, "正在强制关闭应用...");
         
         // 停止定位服务
-        if (locationService != null) {
+        if (null != locationService) {
             locationService.removeLocationListener(locationListener);
             locationService.removeAlarmTriggerListener(alarmTriggerListener);
             locationService.stopLocation();

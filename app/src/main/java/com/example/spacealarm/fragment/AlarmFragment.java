@@ -78,7 +78,7 @@ public class AlarmFragment extends Fragment implements AlarmController.MainViewC
 
     @Override
     public void onAlarmsLoaded(List<Alarm> alarms) {
-        if (isAdded() && alarmAdapter != null) {
+        if (isAdded() && null != alarmAdapter) {
             alarmAdapter.setAlarms(alarms);
             alarmAdapter.notifyDataSetChanged();
         }
@@ -104,7 +104,7 @@ public class AlarmFragment extends Fragment implements AlarmController.MainViewC
     @Override
     public void onResume() {
         super.onResume();
-        if (alarmController != null) {
+        if (null != alarmController) {
             alarmController.loadAllAlarms();
         }
     }

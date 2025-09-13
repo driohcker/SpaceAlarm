@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity {
     // 权限处理方法
     @Override
     protected void onPermissionsResult(boolean granted) {
-        if (granted && mapFragment != null && mapFragment.isVisible()) {
+        if (granted && null != mapFragment && mapFragment.isVisible()) {
             mapFragment.onResume(); // 权限获取后刷新地图
         }
     }

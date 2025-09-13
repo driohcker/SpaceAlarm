@@ -37,8 +37,10 @@ import com.example.spacealarm.service.AlarmService;
 import com.example.spacealarm.service.BaiduLocationService;
 import com.example.spacealarm.service.listener.LocationListener;
 import com.example.spacealarm.service.manager.BaiduMapManager;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +69,7 @@ public class MapController {
             LatLng currentLocation = new LatLng(latitude, longitude);
             showMyLocation();
 
-            if (listener != null) {
+            if (null != listener) {
                 listener.onLocationUpdate(currentLocation);
             }
         }
@@ -77,11 +79,15 @@ public class MapController {
             // 处理定位错误
         }
     };
+
     //类里面又加了个接口
     public interface OnMapInteractionListener {
         void onMapClick(LatLng latLng, String address);
+
         void onMarkerClick(Alarm alarm);
+
         void onLocationUpdate(LatLng currentLocation);
+
         void onPoiMarkerClick(LatLng latLng, String name, String address);
     }
 
@@ -118,46 +124,46 @@ public class MapController {
             public void onMapClick(LatLng latLng) {
                 // 记录最后点击的位置
                 lastClickedPosition = latLng;
-                
+
                 // 移除之前的临时标记
-                if (tempMarker != null) {
+                if (null != tempMarker) {
                     tempMarker.remove();
                 }
-                
+
                 // 创建临时标记图标 - 修改这部分代码以固定图标大小
                 // 1. 首先获取原始图标
                 BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_add_32_2);
-                
+
                 // 2. 创建一个固定大小的图标
                 // 这里设置宽高为100px，可以根据需要调整
                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                         Bitmap.createScaledBitmap(
-                                originalDescriptor.getBitmap(), 
+                                originalDescriptor.getBitmap(),
                                 100, 100, // 设置固定的宽度和高度
                                 true // 是否使用滤波
                         )
                 );
-                
+
                 // 3. 释放原始资源以避免内存泄漏
                 originalDescriptor.recycle();
-                
+
                 // 创建标记选项
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(latLng)
                         .icon(bitmapDescriptor)
                         .title("点击添加闹钟")
                         .draggable(true);
-                
+
                 // 添加标记到地图
                 tempMarker = (Marker) baiduMap.addOverlay(markerOptions);
-                
+
                 // 获取点击位置的地址
                 getAddressFromLatLng(latLng);
             }
-            
+
             @Override
             public void onMapPoiClick(MapPoi mapPoi) {
-                if (listener != null) {
+                if (null != listener) {
                     listener.onMapClick(mapPoi.getPosition(), mapPoi.getName());
                 }
             }
@@ -173,13 +179,13 @@ public class MapController {
 
             @Override
             public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-                if (reverseGeoCodeResult == null) {
+                if (null == reverseGeoCodeResult) {
                     Log.e("MapController", "逆地理编码结果为空");
                     Toast.makeText(context, "获取地址失败: 服务无响应", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (reverseGeoCodeResult.error != null && reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                if (null != reverseGeoCodeResult.error && reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
                     Log.e("MapController", "逆地理编码错误: " + reverseGeoCodeResult.error);
                     Toast.makeText(context, "获取地址失败: " + reverseGeoCodeResult.error, Toast.LENGTH_SHORT).show();
                     return;
@@ -188,13 +194,13 @@ public class MapController {
                 String address = reverseGeoCodeResult.getAddress();
                 LatLng location = reverseGeoCodeResult.getLocation();
 
-                if (address == null || address.trim().isEmpty()) {
+                if (null == address || address.trim().isEmpty()) {
                     Log.e("MapController", "获取到的地址为空");
                     Toast.makeText(context, "获取地址失败: 未找到地址信息", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (listener != null) {
+                if (null != listener) {
                     listener.onMapClick(location, address);
                 }
             }
@@ -206,20 +212,20 @@ public class MapController {
             public boolean onMarkerClick(Marker marker) {
                 // 检查ExtraInfo是否为null
                 Bundle extraInfo = marker.getExtraInfo();
-                if (extraInfo == null) {
+                if (null == extraInfo) {
                     return false; // 如果ExtraInfo为null，直接返回false
                 }
-                
+
                 // 检查是否是闹钟标记
                 Alarm alarm = (Alarm) extraInfo.getSerializable("alarm");
-                if (alarm != null && listener != null) {
+                if (null != alarm && null != listener) {
                     listener.onMarkerClick(alarm);
                     return true;
                 }
-                
+
                 // 检查是否是POI标记
                 String poiName = extraInfo.getString("poi_name");
-                if (poiName != null && listener != null) {
+                if (null != poiName && null != listener) {
                     double latitude = extraInfo.getDouble("poi_latitude");
                     double longitude = extraInfo.getDouble("poi_longitude");
                     String address = extraInfo.getString("poi_address");
@@ -247,24 +253,24 @@ public class MapController {
 
     // 显示闹钟标记
     public void showAlarmMarker(Alarm alarm) {
-        if (alarm == null) return;
+        if (null == alarm) return;
 
         LatLng location = new LatLng(alarm.getLatitude(), alarm.getLongitude());
 
         // 创建标记图标 - 修改这部分代码以固定图标大小
         // 1. 首先获取原始图标
         BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_alarm_marker_32_2);
-        
+
         // 2. 创建一个固定大小的图标
         // 这里设置宽高为60px，可以根据需要调整
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                 Bitmap.createScaledBitmap(
-                        originalDescriptor.getBitmap(), 
+                        originalDescriptor.getBitmap(),
                         100, 100, // 设置固定的宽度和高度
                         true // 是否使用滤波
                 )
         );
-        
+
         // 3. 释放原始资源以避免内存泄漏
         originalDescriptor.recycle();
 
@@ -304,7 +310,7 @@ public class MapController {
     }
 
     // 在闹钟标记下添加title字段（已废弃）
-    private void showTextOverlay(LatLng center, String title){
+    private void showTextOverlay(LatLng center, String title) {
         // 在标记下方添加文本覆盖物显示标题
         // 计算文本位置（在标记下方约30像素处）
         LatLng textLocation = new LatLng(center.latitude - 0.0002, center.longitude);
@@ -325,7 +331,7 @@ public class MapController {
     public void removeAlarmMarker(Alarm alarm) {
         for (Marker marker : alarmMarkers) {
             Alarm markerAlarm = (Alarm) marker.getExtraInfo().getSerializable("alarm");
-            if (markerAlarm != null && markerAlarm.getId() == alarm.getId()) {
+            if (null != markerAlarm && markerAlarm.getId() == alarm.getId()) {
                 marker.remove();
                 alarmMarkers.remove(marker);
                 break;
@@ -358,22 +364,22 @@ public class MapController {
     // 显示POI标记
     public void showPoiMarker(PoiInfo poi) {
         LatLng location = poi.location;
-        if (location == null) return;
-    
+        if (null == location) return;
+
         // 创建POI标记图标 - 修改这部分代码以固定图标大小
         // 1. 首先获取原始图标
         BitmapDescriptor originalDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.ic_poi_marker_2);
-        
+
         // 2. 创建一个固定大小的图标
         // 这里设置宽高为50px，可以根据需要调整
         BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                 Bitmap.createScaledBitmap(
-                        originalDescriptor.getBitmap(), 
+                        originalDescriptor.getBitmap(),
                         100, 100, // 设置固定的宽度和高度
                         true // 是否使用滤波
                 )
         );
-        
+
         // 3. 释放原始资源以避免内存泄漏
         originalDescriptor.recycle();
 
@@ -386,10 +392,10 @@ public class MapController {
                 .icon(bitmapDescriptor)
                 .titleOptions(titleOptions)
                 .draggable(false);//removeOverlay之前，设置为ture，标记和title可以拖动：remove之后，标记消失，title还在，不能拖动title
-    
+
         // 添加标记到地图
-        Overlay marker =  baiduMap.addOverlay(markerOptions);
-    
+        Overlay marker = baiduMap.addOverlay(markerOptions);
+
         // 保存POI信息到标记 - 改为存储单独的属性而非整个对象
         android.os.Bundle bundle = new android.os.Bundle();
         bundle.putString("poi_name", poi.name);
@@ -400,7 +406,7 @@ public class MapController {
         marker.setExtraInfo(bundle);
 
         poiMarkers.add(marker);
-    
+
         // 添加标题
 //        showTextOverlay(location, poi.name);
     }
@@ -415,7 +421,7 @@ public class MapController {
         double maxLng = Double.MIN_VALUE;
 
         for (PoiInfo poi : poiList) {
-            if (poi.location != null) {
+            if (null != poi.location) {
                 minLat = Math.min(minLat, poi.location.latitude);
                 maxLat = Math.max(maxLat, poi.location.latitude);
                 minLng = Math.min(minLng, poi.location.longitude);
@@ -448,7 +454,7 @@ public class MapController {
     }
 
     private void getAddressFromLatLng(LatLng latLng) {
-        if (geoCoder != null && latLng != null) {
+        if (null != geoCoder && null != latLng) {
             ReverseGeoCodeOption option = new ReverseGeoCodeOption().location(latLng);
             geoCoder.reverseGeoCode(option);
         }
@@ -471,8 +477,8 @@ public class MapController {
     public void onDestroy() {
         // 移除定位监听器
         locationService.removeLocationListener(locationListener);
-        
-        if (geoCoder != null) {
+
+        if (null != geoCoder) {
             geoCoder.destroy();
         }
         //locationService.stopLocation();
@@ -520,7 +526,7 @@ public class MapController {
 
         // 尝试获取最后已知的位置
         BDLocation lastLocation = locationService.getLastKnownLocation();
-        if (lastLocation != null) {
+        if (null != lastLocation) {
             double latitude = lastLocation.getLatitude();
             double longitude = lastLocation.getLongitude();
             float accuracy = lastLocation.getRadius();
@@ -547,7 +553,7 @@ public class MapController {
         }
     }
 
-    public void showMyLocation(){
+    public void showMyLocation() {
         // 确保定位服务已启动
         if (!locationService.isStarted()) {
             locationService.startLocation();
@@ -555,7 +561,7 @@ public class MapController {
 
         // 尝试获取最后已知的位置
         BDLocation lastLocation = locationService.getLastKnownLocation();
-        if (lastLocation != null) {
+        if (null != lastLocation) {
             double latitude = lastLocation.getLatitude();
             double longitude = lastLocation.getLongitude();
             float accuracy = lastLocation.getRadius();
@@ -585,7 +591,7 @@ public class MapController {
     public void showAlarmLocation(long alarmId) {
         // 根据alarmId获取闹钟对象
         Alarm alarm = alarmService.getAlarmById(alarmId);
-        if (alarm != null) {
+        if (null != alarm) {
             LatLng alarmLocation = new LatLng(alarm.getLatitude(), alarm.getLongitude());
             // 定位到闹钟位置
             baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(alarmLocation, 17));

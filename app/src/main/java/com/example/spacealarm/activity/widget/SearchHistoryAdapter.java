@@ -58,13 +58,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         holder.mKeywordTextView.setText(keyword);
 
         holder.itemView.setOnClickListener(v -> {
-            if (mOnHistoryItemClickListener != null) {
+            if (null != mOnHistoryItemClickListener) {
                 mOnHistoryItemClickListener.onHistoryItemClick(keyword);
             }
         });
 
         holder.mDeleteImageView.setOnClickListener(v -> {
-            if (mOnDeleteClickListener != null) {
+            if (null != mOnDeleteClickListener) {
                 mOnDeleteClickListener.onDeleteClick(keyword);
             }
         });

@@ -67,7 +67,7 @@ public class CustomToolbarManager {
         closeAppButton = activity.findViewById(R.id.close_app_button);
 
         // 设置关闭应用按钮点击事件
-        if (closeAppButton != null) {
+        if (null != closeAppButton) {
             closeAppButton.setOnClickListener(v -> forceCloseApp(activity));
         }
 
@@ -79,12 +79,12 @@ public class CustomToolbarManager {
         mPoiSearch.setOnGetPoiSearchResultListener(new OnGetPoiSearchResultListener() {
             @Override
             public void onGetPoiResult(PoiResult poiResult) {
-                if (poiResult == null || poiResult.error != PoiResult.ERRORNO.NO_ERROR) {
+                if (null == poiResult || poiResult.error != PoiResult.ERRORNO.NO_ERROR) {
                     Toast.makeText(activity, "未找到搜索结果", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // 将搜索结果传递给MapFragment处理
-                if (mapFragment != null) {
+                if (null != mapFragment) {
                     mapFragment.showPoiSearchResults(poiResult);
                 }
             }
@@ -107,7 +107,7 @@ public class CustomToolbarManager {
 
         // 设置搜索按钮点击事件
         ImageView searchButton = activity.findViewById(R.id.search_button);
-        if (searchButton != null) {
+        if (null != searchButton) {
             searchButton.setOnClickListener(v -> {
                 String keyword = searchEditText.getText().toString();
                 if (!keyword.isEmpty()) {
@@ -124,13 +124,13 @@ public class CustomToolbarManager {
 
         // 添加搜索历史按钮点击事件
         ImageView historyButton = activity.findViewById(R.id.history_button);
-        if (historyButton != null) {
+        if (null != historyButton) {
             historyButton.setOnClickListener(v -> showSearchHistory(activity));
         }
 
         // 初始化清除按钮
         ImageView clearButton = activity.findViewById(R.id.clear_button);
-        if (clearButton != null) {
+        if (null != clearButton) {
             clearButton.setOnClickListener(v -> {
                 searchEditText.setText("");
                 clearButton.setVisibility(View.GONE);
@@ -163,7 +163,7 @@ public class CustomToolbarManager {
 
     // 执行搜索操作
     private static void performSearch(Activity activity) {
-        if (searchEditText != null && !searchEditText.getText().toString().isEmpty()) {
+        if (null != searchEditText && !searchEditText.getText().toString().isEmpty()) {
             String keyword = searchEditText.getText().toString();
             String city = null;
 
@@ -171,7 +171,7 @@ public class CustomToolbarManager {
             city = extractCityFromKeyword(keyword);
 
             // 2. 如果关键词中没有明确的城市名称，则使用当前城市
-            if (city == null || city.isEmpty()) {
+            if (null == city || city.isEmpty()) {
                 try {
                     BaiduLocationService locationService = BaiduLocationService.getInstance(activity);
                     city = locationService.getCurrentCity();
@@ -180,7 +180,7 @@ public class CustomToolbarManager {
                 }
 
                 // 如果无法获取当前城市，使用默认城市"北京"
-                if (city == null || city.isEmpty()) {
+                if (null == city || city.isEmpty()) {
                     city = "北京";
                 }
             } else {
@@ -243,7 +243,7 @@ public class CustomToolbarManager {
 
     // 在适当的生命周期方法中释放资源
     public static void onDestroy() {
-        if (mPoiSearch != null) {
+        if (null != mPoiSearch) {
             mPoiSearch.destroy();
         }
     }
@@ -259,7 +259,7 @@ public class CustomToolbarManager {
 
     // 显示标题模式
     private static void showTitleMode() {
-        if (titleLayout != null && searchLayout != null) {
+        if (null != titleLayout && null != searchLayout) {
             titleLayout.setVisibility(View.VISIBLE);
             searchLayout.setVisibility(View.GONE);
         }
@@ -267,7 +267,7 @@ public class CustomToolbarManager {
 
     // 显示搜索模式
     private static void showSearchMode() {
-        if (titleLayout != null && searchLayout != null) {
+        if (null != titleLayout && null != searchLayout) {
             titleLayout.setVisibility(View.GONE);
             searchLayout.setVisibility(View.VISIBLE);
         }
@@ -275,7 +275,7 @@ public class CustomToolbarManager {
 
     // 新增方法：显示搜索历史
     private static void showSearchHistory(Activity activity) {
-        if (searchHistoryPopup == null) {
+        if (null == searchHistoryPopup) {
             View view = LayoutInflater.from(activity).inflate(R.layout.search_history_layout, null);
             RecyclerView recyclerView = view.findViewById(R.id.search_history_recycler);
             TextView clearHistory = view.findViewById(R.id.clear_history);
@@ -352,7 +352,7 @@ public class CustomToolbarManager {
 
     // 新增方法：隐藏搜索历史弹窗
     public static void hideSearchHistoryPopup() {
-        if (searchHistoryPopup != null && searchHistoryPopup.isShowing()) {
+        if (null != searchHistoryPopup && searchHistoryPopup.isShowing()) {
             searchHistoryPopup.dismiss();
         }
     }
@@ -366,7 +366,7 @@ public class CustomToolbarManager {
 
             // 停止定位服务
             BaiduLocationService locationService = BaiduLocationService.getInstance(context);
-            if (locationService != null) {
+            if (null != locationService) {
                 locationService.stopLocation();
             }
 

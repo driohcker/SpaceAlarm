@@ -50,9 +50,9 @@ public class BaiduLocationService {
         // 强制使用Application上下文
         Context appContext = context.getApplicationContext();
 
-        if (instance == null) {
+        if (null == instance) {
             synchronized (BaiduLocationService.class) {
-                if (instance == null) {
+                if (null == instance) {
                     // 确保SDK已初始化并同意隐私政策
                     if (!BaiduMapManager.isInitialized()) {
                         Log.d(TAG, "未初始化BaiduMapManager，现在开始初始化");
@@ -99,7 +99,7 @@ public class BaiduLocationService {
         locationClient.registerLocationListener(new BDAbstractLocationListener() {
             @Override
             public void onReceiveLocation(BDLocation bdLocation) {
-                if (bdLocation == null) {
+                if (null == bdLocation ) {
                     Log.e(TAG, "BDLocation is null");
                     return;
                 }
@@ -115,7 +115,7 @@ public class BaiduLocationService {
                     String direction_text = convertDirectionToText(direction_num);
                     String address = bdLocation.getAddrStr(); // 获取地址信息
 
-                    if (address == null || address.isEmpty()) {
+                    if (null == address || address.isEmpty()) {
                         address = "未知位置";
                     }
 
@@ -140,7 +140,7 @@ public class BaiduLocationService {
 
     private void checkAlarmTrigger(double latitude, double longitude) {
         Alarm triggeredAlarm = alarmService.checkAllAlarms(latitude, longitude);
-        if (triggeredAlarm != null) {
+        if (null != triggeredAlarm) {
             Log.d(TAG, "检测到闹钟触发：" + triggeredAlarm.getTitle());
             // 修改通知调用
             notificationService.showAlarmNotification(triggeredAlarm);
@@ -188,32 +188,32 @@ public class BaiduLocationService {
 
     // 监听器管理方法
     public void addLocationListener(LocationListener listener) {
-        if (listener != null && !locationListeners.contains(listener)) {
+        if (null != listener && !locationListeners.contains(listener)) {
             locationListeners.add(listener);
         }
     }
 
     public void removeLocationListener(LocationListener listener) {
-        if (listener != null) {
+        if (null != listener) {
             locationListeners.remove(listener);
         }
     }
 
     public void addAlarmTriggerListener(AlarmTriggerListener listener) {
-        if (listener != null && !alarmTriggerListeners.contains(listener)) {
+        if (null != listener && !alarmTriggerListeners.contains(listener)) {
             alarmTriggerListeners.add(listener);
         }
     }
 
     public void removeAlarmTriggerListener(AlarmTriggerListener listener) {
-        if (listener != null) {
+        if (null != listener) {
             alarmTriggerListeners.remove(listener);
         }
     }
 
     // 定位控制方法
     public void startLocation() {
-        if (!isStarted && locationClient != null) {
+        if (!isStarted && null != locationClient) {
             try {
                 locationClient.start();
                 isStarted = true;
@@ -225,7 +225,7 @@ public class BaiduLocationService {
     }
 
     public void stopLocation() {
-        if (locationClient != null && locationClient.isStarted()) {
+        if (null != locationClient && locationClient.isStarted()) {
             locationClient.stop();
             isStarted = false;
             Log.d(TAG, "定位已停止");
@@ -242,21 +242,21 @@ public class BaiduLocationService {
     }
 
     public BDLocation getLastKnownLocation() {
-        if (locationClient != null) {
+        if (null != locationClient) {
             return locationClient.getLastKnownLocation();
         }
         return null;
     }
 
     public void requestLocation() {
-        if (locationClient != null && isStarted) {
+        if (null != locationClient && isStarted) {
             locationClient.requestLocation();
         }
     }
 
     public String getCurrentCity() {
         BDLocation location = getLastKnownLocation();
-        if (location != null) {
+        if (null != location) {
             return location.getCity();
         }
         return null;

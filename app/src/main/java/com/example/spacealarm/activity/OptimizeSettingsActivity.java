@@ -79,7 +79,7 @@ public class OptimizeSettingsActivity extends AppCompatActivity {
                     "com.miui.permcenter.autostart.AutoStartManagementActivity");
             intent.setComponent(componentName);
             
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            if (null != intent.resolveActivity(getPackageManager())) {
                 startActivity(intent);
                 return;
             }
@@ -89,7 +89,7 @@ public class OptimizeSettingsActivity extends AppCompatActivity {
                     "com.huawei.systemmanager.optimize.process.ProtectActivity");
             intent.setComponent(componentName);
             
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            if (null != intent.resolveActivity(getPackageManager())) {
                 startActivity(intent);
                 return;
             }
@@ -99,7 +99,7 @@ public class OptimizeSettingsActivity extends AppCompatActivity {
                     "com.oppo.safe.permission.startup.StartupAppListActivity");
             intent.setComponent(componentName);
             
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            if (null != intent.resolveActivity(getPackageManager())) {
                 startActivity(intent);
                 return;
             }
@@ -109,7 +109,7 @@ public class OptimizeSettingsActivity extends AppCompatActivity {
                     "com.vivo.permissionmanager.activity.BgStartUpManagerActivity");
             intent.setComponent(componentName);
             
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            if (null != intent.resolveActivity(getPackageManager())) {
                 startActivity(intent);
                 return;
             }

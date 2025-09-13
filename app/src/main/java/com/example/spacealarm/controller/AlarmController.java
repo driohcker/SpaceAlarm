@@ -30,11 +30,11 @@ public class AlarmController {
     public void loadAllAlarms() {
         try {
             List<Alarm> alarms = alarmService.getAllAlarms();
-            if (viewCallback != null) {
+            if ( null != viewCallback ) {
                 viewCallback.onAlarmsLoaded(alarms);
             }
         } catch (Exception e) {
-            if (viewCallback != null) {
+            if ( null != viewCallback) {
                 viewCallback.onError("加载闹钟失败: " + e.getMessage());
             }
         }
@@ -43,11 +43,11 @@ public class AlarmController {
     public void loadEnabledAlarms() {
         try {
             List<Alarm> alarms = alarmService.getEnabledAlarms();
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 viewCallback.onAlarmsLoaded(alarms);
             }
         } catch (Exception e) {
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 viewCallback.onError("加载启用闹钟失败: " + e.getMessage());
             }
         }
@@ -56,7 +56,7 @@ public class AlarmController {
     public void deleteAlarm(long alarmId) {
         try {
             boolean success = alarmService.deleteAlarm(alarmId);
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 if (success) {
                     viewCallback.onAlarmDeleted(alarmId);
                 } else {
@@ -64,7 +64,7 @@ public class AlarmController {
                 }
             }
         } catch (Exception e) {
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 viewCallback.onError("删除闹钟失败: " + e.getMessage());
             }
         }
@@ -73,21 +73,21 @@ public class AlarmController {
     public void toggleAlarm(long alarmId) {
         try {
             boolean success = alarmService.toggleAlarmEnabled(alarmId);
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 if (success) {
                     Alarm alarm = alarmService.getAlarmById(alarmId);
-                    viewCallback.onAlarmToggled(alarmId, alarm != null && alarm.isEnabled());
+                    viewCallback.onAlarmToggled(alarmId, null != alarm && alarm.isEnabled());
                 } else {
                     viewCallback.onError("切换闹钟状态失败");
                 }
             }
         } catch (Exception e) {
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 viewCallback.onError("切换闹钟状态失败: " + e.getMessage());
             }
         }
     }
-
+  
     public Alarm getAlarmDetails(long alarmId) {
         return alarmService.getAlarmById(alarmId);
     }
@@ -100,7 +100,7 @@ public class AlarmController {
         try {
             return alarmService.updateAlarm(alarm);
         } catch (Exception e) {
-            if (viewCallback != null) {
+            if (null != viewCallback) {
                 viewCallback.onError("更新闹钟失败: " + e.getMessage());
             }
             return false;

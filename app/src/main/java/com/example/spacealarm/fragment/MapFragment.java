@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.example.spacealarm.service.manager.CustomToolbarManager;
 import com.example.spacealarm.controller.MapController;
 import com.example.spacealarm.entity.Alarm;
 import com.example.spacealarm.service.AlarmService;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -53,8 +56,8 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mMapView = view.findViewById(R.id.bmapView);
         fab_locate = view.findViewById(R.id.fab_locate);
-        fab_add_alarm = view.findViewById(R.id.fab_add_alarm);
 
+        fab_add_alarm = view.findViewById(R.id.fab_add_alarm); 
         try {
             mapController = new MapController(getActivity(), mMapView);
             mapController.startLocation();
@@ -62,7 +65,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
             // 检查是否有闹钟ID参数，如果有则定位到该闹钟
             Bundle bundle = getArguments();
-            if (bundle != null && bundle.containsKey("alarmId")) {
+            if (null != bundle && bundle.containsKey("alarmId")) {
                 long alarmId = bundle.getLong("alarmId");
                 mapController.showAlarmLocation(alarmId);
             } else {
@@ -84,7 +87,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
             @Override
             public void onClick(View view) {
                 LatLng clickedPosition = mapController.getLastClickedPosition();
-                if (clickedPosition == null) {
+                if (null == clickedPosition) {
                     Toast.makeText(getContext(), "请先在地图上点击选择位置", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -108,11 +111,11 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
     @Override
     public void onResume() {
         super.onResume();
-        if (mMapView != null  && mapController !=null) {
+        if (null != mMapView  && null != mapController) {
             mapController.onResume();
             // 检查是否有闹钟ID参数，如果有则定位到该闹钟
             Bundle bundle = getArguments();
-            if (bundle != null && bundle.containsKey("alarmId")) {
+            if (null != bundle && bundle.containsKey("alarmId")) {
                 long alarmId = bundle.getLong("alarmId");
                 mapController.showAlarmLocation(alarmId);
             }else{
@@ -127,7 +130,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
     @Override
     public void onPause() {
-        if (mMapView != null) {
+        if (null != mMapView) {
             mapController.onPause();
         }
         super.onPause();
@@ -135,7 +138,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
     @Override
     public void onDestroy() {
-        if (mMapView != null) {
+        if (null != mMapView) {
             mapController.onDestroy();
         }
         super.onDestroy();
@@ -318,7 +321,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
 
     // 处理POI搜索结果
     public void showPoiSearchResults(PoiResult poiResult) {
-        if (mapController != null && poiResult != null) {
+        if (null != mapController && null != poiResult) {
             //清除地图上的现有标记
             mapController.clearAllPoiMarkers();//实质上只清除了上次poi信息
             //清除上次点击信息
@@ -327,10 +330,10 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
             mapController.loadAlarms();
             // 获取POI列表
             List<PoiInfo> poiList = poiResult.getAllPoi();
-            if (poiList != null && !poiList.isEmpty()) {
+            if (null != poiList && !poiList.isEmpty()) {
                 // 在地图上添加POI标记
                 for (PoiInfo poi : poiList) {
-                    if (poi.location != null) {
+                    if (null != poi.location) {
                         mapController.showPoiMarker(poi);
                     }
                 }
@@ -417,7 +420,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
     @Override
     public void onMapClick(LatLng latLng, String address) {
         // 存储获取到的地址
-        this.lastClickedAddress = address != null ? address : "未知地址";//没用到latlng
+        this.lastClickedAddress = (null != address ? address : "未知地址");
     }
 
     @Override
@@ -472,7 +475,7 @@ public class MapFragment extends Fragment implements MapController.OnMapInteract
             }
         });
 
-        if(alarm.getTitle()==null){
+        if(null == alarm.getTitle()){
             String title = editAlarmName.getText().toString().trim();
             alarm.setTitle(title);
         }else{

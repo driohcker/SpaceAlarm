@@ -16,7 +16,7 @@ public class ExceptionUtil {
 
     // 使用Toast显示错误信息
     public static void showToast(Context context, String tag, String message) {
-        if (context != null) {
+        if (null != context) {
             String errorMsg = tag + ": " + message;
             Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show();
             Log.e(tag, message);

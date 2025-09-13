@@ -25,7 +25,7 @@ public class SearchHistoryManager {
     }
 
     public static synchronized SearchHistoryManager getInstance(Context context) {
-        if (sInstance == null) {
+        if (null == sInstance) {
             sInstance = new SearchHistoryManager(context.getApplicationContext());
         }
         return sInstance;
@@ -33,7 +33,7 @@ public class SearchHistoryManager {
 
     // 添加搜索历史
     public void addSearchHistory(String keyword) {
-        if (keyword == null || keyword.isEmpty()) {
+        if (null == keyword || keyword.isEmpty()) {
             return;
         }
 
@@ -51,7 +51,7 @@ public class SearchHistoryManager {
     // 获取搜索历史
     public List<String> getSearchHistory() {
         String json = mSharedPreferences.getString(KEY_HISTORY, null);
-        if (json == null) {
+        if (null == json) {
             return new ArrayList<>();
         }
 

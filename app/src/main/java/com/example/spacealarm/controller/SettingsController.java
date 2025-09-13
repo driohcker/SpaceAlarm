@@ -25,7 +25,7 @@ public class SettingsController {
     }
 
     public static synchronized SettingsController getInstance(Context context) {
-        if (instance == null) {
+        if (null == instance) {
             instance = new SettingsController(context);
         }
         return instance;
@@ -37,7 +37,7 @@ public class SettingsController {
 
     public void setAlarmEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_ALARM_ENABLED, enabled).apply();
-        if (viewCallback != null) {
+        if (null  != viewCallback) {
             viewCallback.onSettingsChanged();
         }
     }
@@ -48,7 +48,7 @@ public class SettingsController {
 
     public void setVibrationEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_VIBRATION_ENABLED, enabled).apply();
-        if (viewCallback != null) {
+        if (null  != viewCallback) {
             viewCallback.onSettingsChanged();
         }
     }
@@ -59,7 +59,7 @@ public class SettingsController {
 
     public void setSoundEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_SOUND_ENABLED, enabled).apply();
-        if (viewCallback != null) {
+        if (null  != viewCallback) {
             viewCallback.onSettingsChanged();
         }
     }
@@ -70,7 +70,7 @@ public class SettingsController {
 
     public void setBackgroundServiceEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_BACKGROUND_SERVICE_ENABLED, enabled).apply();
-        if (viewCallback != null) {
+        if (null  != viewCallback) {
             viewCallback.onSettingsChanged();
         }
     }
@@ -83,7 +83,7 @@ public class SettingsController {
     // 新增：设置语音朗读是否启用
     public void setTextToSpeechEnabled(boolean enabled) {
         sharedPreferences.edit().putBoolean(KEY_TEXT_TO_SPEECH_ENABLED, enabled).apply();
-        if (viewCallback != null) {
+        if (null  != viewCallback) {
             viewCallback.onSettingsChanged();
         }
     }

@@ -76,7 +76,7 @@ public class AlarmService {
     // 切换闹钟启用状态
     public boolean toggleAlarmEnabled(long alarmId) {
         Alarm alarm = getAlarmById(alarmId);
-        if (alarm != null) {
+        if (null != alarm) {
             alarm.setEnabled(!alarm.isEnabled());
             return updateAlarm(alarm);
         }
@@ -119,7 +119,7 @@ public class AlarmService {
         Long lastTriggerTime = alarmMapper.getAlarmLastTriggerTime(alarm.getId());
         
         // 如果这是第一次触发，或者距离上次触发已经超过最小间隔时间，则允许触发
-        return lastTriggerTime == null || (currentTime - lastTriggerTime) > MIN_ALARM_INTERVAL;
+        return null == lastTriggerTime || (currentTime - lastTriggerTime) > MIN_ALARM_INTERVAL;
     }
     
     // 更新闹钟的最后触发时间

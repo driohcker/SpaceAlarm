@@ -38,7 +38,7 @@ public class TextToSpeechManager {
      * 获取单例实例
      */
     public static synchronized TextToSpeechManager getInstance(Context context) {
-        if (instance == null) {
+        if (null == instance) {
             instance = new TextToSpeechManager(context);
         }
         return instance;
@@ -178,7 +178,7 @@ public class TextToSpeechManager {
             installIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             
             // 检查是否有Activity可以处理这个Intent
-            if (installIntent.resolveActivity(context.getPackageManager()) != null) {
+            if (null != installIntent.resolveActivity(context.getPackageManager())) {
                 context.startActivity(installIntent);
                 Log.d(TAG, "已启动TTS引擎安装界面");
             } else {
@@ -200,7 +200,7 @@ public class TextToSpeechManager {
      * @param text 要朗读的文本内容
      */
     public void speak(String text) {
-        if (textToSpeech == null) {
+        if (null == textToSpeech) {
             Log.e(TAG, "TextToSpeech未初始化，重新初始化");
             initTextToSpeech();
             return;
@@ -250,7 +250,7 @@ public class TextToSpeechManager {
      * 释放TextToSpeech资源
      */
     public void shutdown() {
-        if (textToSpeech != null) {
+        if (null != textToSpeech) {
             textToSpeech.stop();
             textToSpeech.shutdown();
             textToSpeech = null;
@@ -265,7 +265,7 @@ public class TextToSpeechManager {
      * 检查TextToSpeech是否可用
      */
     public boolean isAvailable() {
-        return textToSpeech != null && isInitialized && !initTimedOut;
+        return null != textToSpeech && isInitialized && !initTimedOut;
     }
 
     /**
@@ -273,7 +273,7 @@ public class TextToSpeechManager {
      * @param rate 速度值，1.0为默认速度
      */
     public void setSpeechRate(float rate) {
-        if (textToSpeech != null && isInitialized) {
+        if (null != textToSpeech && isInitialized) {
             textToSpeech.setSpeechRate(rate);
         }
     }
@@ -283,7 +283,7 @@ public class TextToSpeechManager {
      * @param pitch 音调值，1.0为默认音调
      */
     public void setPitch(float pitch) {
-        if (textToSpeech != null && isInitialized) {
+        if (null != textToSpeech && isInitialized) {
             textToSpeech.setPitch(pitch);
         }
     }

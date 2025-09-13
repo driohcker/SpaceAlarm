@@ -53,7 +53,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
     @Override
     public void onBindViewHolder(@NonNull AlarmViewHolder holder, int position) {
-        if (alarms == null || position >= alarms.size()) return;
+        if (null == alarms || position >= alarms.size()) return;
 
         Alarm alarm = alarms.get(position);
         holder.alarmTitle.setText(alarm.getTitle());
@@ -98,7 +98,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.AlarmViewHol
 
     @Override
     public int getItemCount() {
-        return alarms == null ? 0 : alarms.size();
+        return null == alarms ? 0 : alarms.size();
     }
 
     public void setAlarms(List<Alarm> alarms) {
